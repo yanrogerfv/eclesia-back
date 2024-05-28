@@ -19,7 +19,7 @@ public class EscalaService {
     }
 
     public List<Escala> findAllEscalas(){
-        return
+        return null;
     }
 
     public List<Escala> findMonthEscalas(){

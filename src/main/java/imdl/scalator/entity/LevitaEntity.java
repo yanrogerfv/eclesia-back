@@ -16,4 +16,5 @@ public class LevitaEntity {
     private int instrumento;
     private String contato;
     private String email;
+    private boolean disponivel;
 }

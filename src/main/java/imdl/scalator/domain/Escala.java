@@ -16,6 +16,6 @@ public class Escala {
     private Levita bateria;
     private List<Levita> back;
     private List<Musica> musicas;
-    private LocalDate date;
+    private LocalDate data;
     private String observacoes;
 }

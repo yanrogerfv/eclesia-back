@@ -20,7 +20,7 @@ public class EscalaMapper {
         domain.setTeclado(levitaService.findById(entity.getTeclado()));
         domain.setViolao(levitaService.findById(entity.getViolao()));
 //        domain.setBack(entity.getBacks());
-        domain.setDate(entity.getDate());
+        domain.setData(entity.getData());
         return domain;
     }
 }

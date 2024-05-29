@@ -1,25 +1,20 @@
-package imdl.scalator.entity;
+package imdl.scalator.domain.input;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
-@Entity
-@Table
-public class EscalaEntity {
-    private UUID escalaId;
+public class EscalaInput {
     private UUID ministro;
     private UUID violao;
     private UUID teclado;
     private UUID baixo;
     private UUID bateria;
-    private UUID backs;
+    private List<UUID> backs;
     private UUID musicas;
     private LocalDate data;
     private String observacoes;
-
 }

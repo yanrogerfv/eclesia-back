@@ -4,6 +4,7 @@ import imdl.scalator.domain.exception.EntityNotFoundException;
 import imdl.scalator.domain.Escala;
 import imdl.scalator.domain.Levita;
 import imdl.scalator.domain.Musica;
+import imdl.scalator.domain.input.EscalaInput;
 import imdl.scalator.entity.EscalaEntity;
 import imdl.scalator.persistence.EscalaRepository;
 import imdl.scalator.persistence.LevitaRepository;
@@ -43,14 +44,14 @@ public class EscalaService {
         escala.setBateria(findLevita(entity.getBateria()));
         escala.setTeclado(findLevita(entity.getTeclado()));
         escala.setViolao(findLevita(entity.getViolao()));
-        escala.setDate(entity.getDate());
+        escala.setData(entity.getData());
         escala.setId(entity.getEscalaId());
         escala.setMusicas(musicasRepository.findAllInEscala(escala.getId()).stream().map(MusicaMapper::entityToDomain).toList());
         return escala;
     }
 
-    public Escala create(Escala escala){
-
+    public Escala create(EscalaInput input){
+        Escala escala = inputToDomain(input);
 
 
         return escala;
@@ -64,8 +65,8 @@ public class EscalaService {
         entity.setBateria(escala.getBateria().getId());
         entity.setTeclado(escala.getTeclado().getId());
         entity.setViolao(escala.getViolao().getId());
-        entity.setMusicas(escala.getMusicas());
-        entity.setDate(escala.getDate());
+//        entity.setMusicas(escala.getMusicas());
+        entity.setData(escala.getData());
         return escala;
     }
 
@@ -76,6 +77,19 @@ public class EscalaService {
 
     private List<Musica> findMusicas(List<UUID> musicasId){
 
+    }
+
+    private Escala inputToDomain(EscalaInput input){
+        Escala escala = new Escala();
+        escala.setMinistro(findLevita(input.getMinistro()));
+        escala.setBaixo(findLevita(input.getBaixo()));
+        escala.setBateria(findLevita(input.getBateria()));
+        escala.setTeclado(findLevita(input.getTeclado()));
+        escala.setViolao(findLevita(input.getTeclado()));
+        escala.setBack(levitaRepository.findAllById(input.getBacks()).stream().map(LevitaMapper::entityToDomain).toList());
+        escala.setObservacoes(input.getObservacoes());
+        escala.setData(input.getData());
+        return escala;
     }
 
 }

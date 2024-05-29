@@ -1,11 +1,9 @@
 package imdl.scalator.controller;
 
 import imdl.scalator.domain.Escala;
+import imdl.scalator.domain.input.EscalaInput;
 import imdl.scalator.service.EscalaService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,6 +26,11 @@ public class EscalaController {
     @GetMapping("/{mes}")
     public List<Escala> listInPeriodo(){
         return escalaService.findMonthEscalas();
+    }
+
+    @PostMapping
+    public Escala createEscala(EscalaInput input){
+        return escalaService.create(input);
     }
 
 }

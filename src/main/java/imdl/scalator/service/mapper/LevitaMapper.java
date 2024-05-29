@@ -7,12 +7,24 @@ import imdl.scalator.entity.LevitaEntity;
 public class LevitaMapper {
 
     public static Levita entityToDomain(LevitaEntity entity){
-        Levita levita = new Levita();
-        levita.setId(entity.getId());
-        levita.setNome(entity.getNome());
-        levita.setInstrumento(Instrumento.values()[entity.getInstrumento()]);
-        levita.setContato(entity.getContato());
-        levita.setEmail(entity.getEmail());
-        return levita;
+        Levita domain = new Levita();
+        domain.setId(entity.getId());
+        domain.setNome(entity.getNome());
+        domain.setInstrumento(Instrumento.values()[entity.getInstrumento()]);
+        domain.setContato(entity.getContato());
+        domain.setEmail(entity.getEmail());
+        return domain;
     }
+
+    public static LevitaEntity domainToEntity(Levita domain){
+        LevitaEntity entity = new LevitaEntity();
+        entity.setId(domain.getId());
+        entity.setNome(domain.getNome());
+        entity.setInstrumento(domain.getInstrumento().ordinal());
+        entity.setContato(domain.getContato());
+        entity.setEmail(domain.getEmail());
+        entity.setDisponivel(domain.isDisponivel());
+        return entity;
+    }
+
 }

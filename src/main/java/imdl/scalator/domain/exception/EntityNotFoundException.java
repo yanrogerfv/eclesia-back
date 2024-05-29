@@ -1,4 +1,4 @@
-package imdl.scalator.domain;
+package imdl.scalator.domain.exception;
 
 public class EntityNotFoundException extends RuntimeException {
 

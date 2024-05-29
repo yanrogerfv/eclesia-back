@@ -1,13 +1,15 @@
 package imdl.scalator.service;
 
-import imdl.scalator.domain.EntityNotFoundException;
+import imdl.scalator.domain.exception.EntityNotFoundException;
 import imdl.scalator.domain.Escala;
+import imdl.scalator.domain.Levita;
 import imdl.scalator.domain.Musica;
 import imdl.scalator.entity.EscalaEntity;
 import imdl.scalator.persistence.EscalaRepository;
 import imdl.scalator.persistence.LevitaRepository;
 import imdl.scalator.persistence.MusicasRepository;
 import imdl.scalator.service.mapper.LevitaMapper;
+import imdl.scalator.service.mapper.MusicaMapper;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,25 +38,21 @@ public class EscalaService {
         EscalaEntity entity = escalaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."));
         Escala escala = new Escala();
-        escala.setMinistro(LevitaMapper.entityToDomain(levitaRepository.findById(entity
-                .getMinistro()).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."))));
-        escala.setBaixo(LevitaMapper.entityToDomain(levitaRepository.findById(entity
-                .getBaixo()).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."))));
-        escala.setBateria(LevitaMapper.entityToDomain(levitaRepository.findById(entity
-                .getBateria()).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."))));
-        escala.setTeclado(LevitaMapper.entityToDomain(levitaRepository.findById(entity
-                .getTeclado()).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."))));
-        escala.setViolao(LevitaMapper.entityToDomain(levitaRepository.findById(entity
-                .getViolao()).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."))));
+        escala.setMinistro(findLevita(entity.getMinistro()));
+        escala.setBaixo(findLevita(entity.getBaixo()));
+        escala.setBateria(findLevita(entity.getBateria()));
+        escala.setTeclado(findLevita(entity.getTeclado()));
+        escala.setViolao(findLevita(entity.getViolao()));
         escala.setDate(entity.getDate());
         escala.setId(entity.getEscalaId());
-//        escala.setMusicas(entity.getMusicas().forEach(musicaId -> {
-//            return musicasRepository.findById(musicaId).orElseThrow(() -> new EntityNotFoundException("Música não encontrada."));
-//        }));
+        escala.setMusicas(musicasRepository.findAllInEscala(escala.getId()).stream().map(MusicaMapper::entityToDomain).toList());
         return escala;
     }
 
     public Escala create(Escala escala){
+
+
+
         return escala;
     }
 
@@ -66,9 +64,18 @@ public class EscalaService {
         entity.setBateria(escala.getBateria().getId());
         entity.setTeclado(escala.getTeclado().getId());
         entity.setViolao(escala.getViolao().getId());
-        entity.setMusicas(escala.getMusicas().stream().map(Musica::getId).toList());
+        entity.setMusicas(escala.getMusicas());
         entity.setDate(escala.getDate());
         return escala;
+    }
+
+    private Levita findLevita(UUID levitaId){
+        return LevitaMapper.entityToDomain(levitaRepository.findById(levitaId)
+                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
+    }
+
+    private List<Musica> findMusicas(List<UUID> musicasId){
+
     }
 
 }

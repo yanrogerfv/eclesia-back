@@ -1,7 +1,6 @@
 package imdl.scalator.service.mapper;
 
 import imdl.scalator.domain.Escala;
-import imdl.scalator.domain.Levita;
 import imdl.scalator.entity.EscalaEntity;
 import imdl.scalator.service.LevitaService;
 
@@ -20,7 +19,7 @@ public class EscalaMapper {
         domain.setBateria(levitaService.findById(entity.getBateria()));
         domain.setTeclado(levitaService.findById(entity.getTeclado()));
         domain.setViolao(levitaService.findById(entity.getViolao()));
-        domain.setBack(entity.getBack());
+//        domain.setBack(entity.getBacks());
         domain.setDate(entity.getDate());
         return domain;
     }

@@ -8,13 +8,14 @@ import java.util.UUID;
 
 @Data
 public class EscalaInput {
+    private String titulo;
     private UUID ministro;
     private UUID violao;
     private UUID teclado;
     private UUID baixo;
     private UUID bateria;
     private List<UUID> backs;
-    private UUID musicas;
+    private List<UUID> musicas;
     private LocalDate data;
     private String observacoes;
 }

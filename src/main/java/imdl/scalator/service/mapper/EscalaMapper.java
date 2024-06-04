@@ -12,7 +12,7 @@ public class EscalaMapper {
         domain.setBateria(LevitaMapper.entityToDomain(entity.getBateria()));
         domain.setTeclado(LevitaMapper.entityToDomain(entity.getTeclado()));
         domain.setViolao(LevitaMapper.entityToDomain(entity.getViolao()));
-        domain.setBack(entity.getBack().stream().map(LevitaMapper::entityToDomain).toList());
+//        domain.setBack(entity.getBack().stream().map(LevitaMapper::entityToDomain).toList());
         domain.setData(entity.getData());
         return domain;
     }

@@ -1,5 +1,5 @@
 package imdl.scalator.domain;
 
 public enum Instrumento {
-    VOZ, VIOLAO, BATERIA, BAIXO, TECLADO, MIX;
+    VOZ, VIOLAO, TECLADO, BATERIA, BAIXO, MIX;
 }

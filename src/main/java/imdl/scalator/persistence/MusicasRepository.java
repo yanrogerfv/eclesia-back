@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface MusicasRepository extends JpaRepository<MusicaEntity, UUID> {
 
-    @Query("SELECT m FROM MusicaEntity m WHERE m.escala = :escalaId")
+    @Query("SELECT m FROM MusicaEntity m WHERE m.escala = :id_escala")
     List<MusicaEntity> findAllInEscala(@Param("id_escala")UUID escalaId);
 }

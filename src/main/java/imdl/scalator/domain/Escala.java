@@ -9,6 +9,7 @@ import java.util.UUID;
 public class Escala {
     private UUID id;
     private String titulo;
+    private LocalDate data;
     private Levita ministro;
     private Levita violao;
     private Levita teclado;
@@ -16,7 +17,6 @@ public class Escala {
     private Levita bateria;
     private List<Levita> back;
     private List<Musica> musicas;
-    private LocalDate data;
     private String observacoes;
 
     public UUID getId() {

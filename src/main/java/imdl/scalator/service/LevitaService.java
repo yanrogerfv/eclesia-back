@@ -61,7 +61,8 @@ public class LevitaService {
             throw new RogueException("O nome está vazio.");
         if(input.getInstrumento() == null)
             throw new RogueException("O instrumento está vazio.");
-        if(input.getContato().isBlank() && input.getEmail().isBlank())
+        if((input.getContato() == null||input.getContato().isBlank())
+                && (input.getEmail() == null ||input.getEmail().isBlank()))
             throw new RogueException("Não há nenhum contato cadastrado.");
     }
 

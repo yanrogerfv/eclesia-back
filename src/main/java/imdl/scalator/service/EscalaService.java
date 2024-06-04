@@ -55,8 +55,7 @@ public class EscalaService {
     public Escala create(EscalaInput input){
         validateInput(input);
         Escala escala = inputToDomain(input);
-
-
+        escalaRepository.save(EscalaMapper.domainToEntity(escala));
         return escala;
     }
 
@@ -82,8 +81,8 @@ public class EscalaService {
             throw new RogueException("A escala está sem título.");
         if(input.getMinistro() == null)
             throw new RogueException("Favor inserir um ministro para a escala.");
-        if(input.getMusicas() == null)
-            throw new RogueException("A escala está sem músicas.");
+//        if(input.getMusicas() == null)
+//            throw new RogueException("A escala está sem músicas.");
     }
     private Escala inputToDomain(EscalaInput input){
         Escala escala = new Escala();

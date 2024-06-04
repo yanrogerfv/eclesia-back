@@ -19,13 +19,21 @@ public class EscalaMapper {
 
     public static EscalaEntity domainToEntity(Escala escala){
         EscalaEntity entity = new EscalaEntity();
-        entity.setEscalaId(escala.getId());
+        if(escala.getId() != null)
+            entity.setEscalaId(escala.getId());
         entity.setTitulo(escala.getTitulo());
+        entity.setData(escala.getData());
         entity.setMinistro(LevitaMapper.domainToEntity(escala.getMinistro()));
-        entity.setBaixo(LevitaMapper.domainToEntity(escala.getBaixo()));
-        entity.setBateria(LevitaMapper.domainToEntity(escala.getBateria()));
-        entity.setViolao(LevitaMapper.domainToEntity(escala.getViolao()));
-
+        if(escala.getBaixo() != null)
+            entity.setBaixo(LevitaMapper.domainToEntity(escala.getBaixo()));
+        if(escala.getBateria() != null)
+            entity.setBateria(LevitaMapper.domainToEntity(escala.getBateria()));
+        if(escala.getViolao() != null)
+            entity.setViolao(LevitaMapper.domainToEntity(escala.getViolao()));
+        if(escala.getTeclado() != null)
+            entity.setTeclado(LevitaMapper.domainToEntity(escala.getTeclado()));
+        if (escala.getObservacoes() != null)
+            entity.setObservacoes(escala.getObservacoes());
         return entity;
     }
 }

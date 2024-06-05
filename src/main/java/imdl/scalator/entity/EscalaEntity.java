@@ -1,6 +1,5 @@
 package imdl.scalator.entity;
 
-import imdl.scalator.domain.Musica;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,7 +15,7 @@ public class EscalaEntity {
     @Id
     @Column(name = "escala_id", columnDefinition = "uuid")
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID escalaId;
+    private UUID id;
 
     @Column(name = "data")
     private LocalDate data;
@@ -39,20 +38,20 @@ public class EscalaEntity {
     @ManyToOne
     @JoinColumn(name = "bateria_id", referencedColumnName = "levita_id")
     private LevitaEntity bateria;
-    /*@ManyToMany
+    @ManyToMany
     @JoinTable(
-            name = "escala_levita",
+            name = "backs_in_escala",
             joinColumns = @JoinColumn(name = "escala_id"),
             inverseJoinColumns = @JoinColumn(name = "levita_id")
     )
     private List<LevitaEntity> back = new ArrayList<>();
     @ManyToMany
     @JoinTable(
-            name = "escala_musica",
-            joinColumns = @JoinColumn(name = "escala_id"),
-            inverseJoinColumns = @JoinColumn(name = "musica_id")
+            name = "musicas_in_escala",
+            joinColumns = @JoinColumn(name = "escala_id", referencedColumnName = "escala_id"),
+            inverseJoinColumns = @JoinColumn(name = "musica_id", referencedColumnName = "musica_id")
     )
-    private List<MusicaEntity> musicas;*/
+    private List<MusicaEntity> musicas;
     private String observacoes;
 
 }

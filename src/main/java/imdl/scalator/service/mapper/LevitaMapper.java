@@ -13,6 +13,7 @@ public class LevitaMapper {
         domain.setInstrumento(Instrumento.values()[entity.getInstrumento()]);
         domain.setContato(entity.getContato());
         domain.setEmail(entity.getEmail());
+        domain.setDisponivel(entity.isDisponivel());
         return domain;
     }
 

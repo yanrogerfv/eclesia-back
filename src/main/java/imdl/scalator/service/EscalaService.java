@@ -54,13 +54,15 @@ public class EscalaService {
 
     public Escala update(UUID id, EscalaInput input){
         EscalaEntity entity = escalaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."));
+        entity.setData(input.getData());
+        entity.setTitulo(input.getTitulo());
         entity.setMinistro(levitaRepository.findById(input.getMinistro()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         entity.setBaixo(levitaRepository.findById(input.getBaixo()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         entity.setBateria(levitaRepository.findById(input.getBateria()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         entity.setTeclado(levitaRepository.findById(input.getTeclado()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         entity.setViolao(levitaRepository.findById(input.getViolao()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
-        //setar o back
-        entity.setData(input.getData());
+        entity.setBack(levitaRepository.findAllById(input.getBacks()));
+        entity.setObservacoes(input.getObservacoes());
         return EscalaMapper.entityToDomain(entity);
     }
 

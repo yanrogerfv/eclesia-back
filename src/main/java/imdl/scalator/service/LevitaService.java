@@ -27,8 +27,8 @@ public class LevitaService {
     }
 
     public Levita findById(UUID id){
-        Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id).orElseThrow(RuntimeException::new));
-        return levita;
+        return LevitaMapper.entityToDomain(levitaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
     }
     public Levita create(LevitaInput input){
         validateInput(input);

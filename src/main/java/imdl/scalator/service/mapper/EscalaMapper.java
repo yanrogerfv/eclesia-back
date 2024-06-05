@@ -7,6 +7,7 @@ public class EscalaMapper {
 
     public static Escala entityToDomain(EscalaEntity entity){
         Escala domain = new Escala();
+        domain.setId(entity.getId());
         domain.setData(entity.getData());
         domain.setTitulo(entity.getTitulo());
         domain.setMinistro(LevitaMapper.entityToDomain(entity.getMinistro()));
@@ -18,27 +19,32 @@ public class EscalaMapper {
             domain.setTeclado(LevitaMapper.entityToDomain(entity.getTeclado()));
         if(entity.getViolao() != null)
             domain.setViolao(LevitaMapper.entityToDomain(entity.getViolao()));
-//        domain.setBack(entity.getBack().stream().map(LevitaMapper::entityToDomain).toList());
+        if(entity.getBack() != null)
+            domain.setBack(entity.getBack().stream().map(LevitaMapper::entityToDomain).toList());
+        if(entity.getObservacoes() != null)
+            domain.setObservacoes(entity.getObservacoes());
         return domain;
     }
 
-    public static EscalaEntity domainToEntity(Escala escala){
+    public static EscalaEntity domainToEntity(Escala domain){
         EscalaEntity entity = new EscalaEntity();
-        if(escala.getId() != null)
-            entity.setEscalaId(escala.getId());
-        entity.setData(escala.getData());
-        entity.setTitulo(escala.getTitulo());
-        entity.setMinistro(LevitaMapper.domainToEntity(escala.getMinistro()));
-        if(escala.getBaixo() != null)
-            entity.setBaixo(LevitaMapper.domainToEntity(escala.getBaixo()));
-        if(escala.getBateria() != null)
-            entity.setBateria(LevitaMapper.domainToEntity(escala.getBateria()));
-        if(escala.getTeclado() != null)
-            entity.setTeclado(LevitaMapper.domainToEntity(escala.getTeclado()));
-        if(escala.getViolao() != null)
-            entity.setViolao(LevitaMapper.domainToEntity(escala.getViolao()));
-        if (escala.getObservacoes() != null)
-            entity.setObservacoes(escala.getObservacoes());
+        if(domain.getId() != null)
+            entity.setId(domain.getId());
+        entity.setData(domain.getData());
+        entity.setTitulo(domain.getTitulo());
+        entity.setMinistro(LevitaMapper.domainToEntity(domain.getMinistro()));
+        if(domain.getBaixo() != null)
+            entity.setBaixo(LevitaMapper.domainToEntity(domain.getBaixo()));
+        if(domain.getBateria() != null)
+            entity.setBateria(LevitaMapper.domainToEntity(domain.getBateria()));
+        if(domain.getTeclado() != null)
+            entity.setTeclado(LevitaMapper.domainToEntity(domain.getTeclado()));
+        if(domain.getViolao() != null)
+            entity.setViolao(LevitaMapper.domainToEntity(domain.getViolao()));
+        if(domain.getBack() != null)
+            entity.setBack(domain.getBack().stream().map(LevitaMapper::domainToEntity).toList());
+        if (domain.getObservacoes() != null)
+            entity.setObservacoes(domain.getObservacoes());
         return entity;
     }
 }

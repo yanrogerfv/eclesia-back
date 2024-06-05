@@ -43,4 +43,10 @@ public class LevitaController {
     public Levita changeDisponivel(@RequestBody UUID id){
         return levitaService.changeDisponivel(id);
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar um levita.")
+    public void deleteMusica(@PathVariable UUID id){
+        levitaService.deleteLevita(id);
+    }
 }

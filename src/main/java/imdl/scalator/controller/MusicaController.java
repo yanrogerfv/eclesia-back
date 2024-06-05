@@ -37,4 +37,10 @@ public class MusicaController {
     public Musica updateMusica(@PathVariable UUID id, @RequestBody MusicaInput input){
         return musicaService.updateMusica(id, input);
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar uma música.")
+    public void deleteMusica(@PathVariable UUID id){
+        musicaService.deleteMusica(id);
+    }
 }

@@ -64,6 +64,11 @@ public class EscalaService {
         return EscalaMapper.entityToDomain(entity);
     }
 
+    public void deleteEscala(UUID id){
+        escalaRepository.delete(escalaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
+    }
+
     private List<Musica> findMusicasInEscala(List<UUID> musicasId){
         return musicaRepository.findAllById(musicasId).stream().map(MusicaMapper::entityToDomain).toList();
     }

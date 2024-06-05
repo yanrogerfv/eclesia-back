@@ -42,6 +42,11 @@ public class MusicaService {
         return musica;
     }
 
+    public void deleteMusica(UUID id){
+        musicaRepository.delete(musicaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Música não encontrada.")));
+    }
+
     private void validate(MusicaInput input){
         if(input.getNome() == null || input.getNome().isBlank())
             throw new RogueException("A música deve ter um nome.");

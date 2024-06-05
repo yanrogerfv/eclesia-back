@@ -48,6 +48,11 @@ public class LevitaService {
         return levita;
     }
 
+    public void deleteLevita(UUID id){
+        levitaRepository.delete(levitaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
+    }
+
     public Levita changeDisponivel(UUID id){
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));

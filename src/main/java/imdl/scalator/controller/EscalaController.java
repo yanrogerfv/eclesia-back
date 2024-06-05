@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin
 @RestController
@@ -43,4 +44,9 @@ public class EscalaController {
         return null;
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar uma escala.")
+    public void deleteMusica(@PathVariable UUID id){
+        escalaService.deleteEscala(id);
+    }
 }

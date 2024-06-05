@@ -16,6 +16,5 @@ public class EscalaInput {
     private UUID baixo;
     private UUID bateria;
     private List<UUID> backs;
-    private List<UUID> musicas;
     private String observacoes;
 }

@@ -40,14 +40,7 @@ public class EscalaService {
     public Escala findById(UUID id){
         EscalaEntity entity = escalaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."));
-        Escala escala = new Escala();
-        escala.setId(entity.getEscalaId());
-        escala.setData(entity.getData());
-        escala.setMinistro(LevitaMapper.entityToDomain(entity.getMinistro()));
-        escala.setBaixo(LevitaMapper.entityToDomain(entity.getBaixo()));
-        escala.setBateria(LevitaMapper.entityToDomain(entity.getBateria()));
-        escala.setTeclado(LevitaMapper.entityToDomain(entity.getTeclado()));
-        escala.setViolao(LevitaMapper.entityToDomain(entity.getViolao()));
+        Escala escala = EscalaMapper.entityToDomain(entity);
         escala.setMusicas(musicasRepository.findAllInEscala(escala.getId()).stream().map(MusicaMapper::entityToDomain).toList());
         return escala;
     }
@@ -66,7 +59,6 @@ public class EscalaService {
         entity.setBateria(levitaRepository.findById(input.getBateria()).orElseThrow(() -> new EntityNotFoundException("")));
         entity.setTeclado(levitaRepository.findById(input.getTeclado()).orElseThrow(() -> new EntityNotFoundException("")));
         entity.setViolao(levitaRepository.findById(input.getViolao()).orElseThrow(() -> new EntityNotFoundException("")));
-//        entity.setMusicas(musicasRepository.findAllById(input.getMusicas()));
         //setar o back
         entity.setData(input.getData());
         return EscalaMapper.entityToDomain(entity);
@@ -77,12 +69,12 @@ public class EscalaService {
     }
 
     private void validateInput(EscalaInput input){
-        if(input.getTitulo().isBlank())
+        if(input.getData() == null)
+            throw new RogueException("A escala está sem data");
+        if(input.getTitulo() == null || input.getTitulo().isBlank())
             throw new RogueException("A escala está sem título.");
         if(input.getMinistro() == null)
             throw new RogueException("Favor inserir um ministro para a escala.");
-//        if(input.getMusicas() == null)
-//            throw new RogueException("A escala está sem músicas.");
     }
     private Escala inputToDomain(EscalaInput input){
         Escala escala = new Escala();

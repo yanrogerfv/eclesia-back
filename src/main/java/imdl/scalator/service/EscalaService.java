@@ -9,7 +9,7 @@ import imdl.scalator.domain.input.EscalaInput;
 import imdl.scalator.entity.EscalaEntity;
 import imdl.scalator.persistence.EscalaRepository;
 import imdl.scalator.persistence.LevitaRepository;
-import imdl.scalator.persistence.MusicasRepository;
+import imdl.scalator.persistence.MusicaRepository;
 import imdl.scalator.service.mapper.EscalaMapper;
 import imdl.scalator.service.mapper.LevitaMapper;
 import imdl.scalator.service.mapper.MusicaMapper;
@@ -21,12 +21,12 @@ public class EscalaService {
 
     private final EscalaRepository escalaRepository;
     private final LevitaRepository levitaRepository;
-    private final MusicasRepository musicasRepository;
+    private final MusicaRepository musicaRepository;
 
-    public EscalaService(EscalaRepository escalaRepository, LevitaRepository levitaRepository, MusicasRepository musicasRepository) {
+    public EscalaService(EscalaRepository escalaRepository, LevitaRepository levitaRepository, MusicaRepository musicaRepository) {
         this.escalaRepository = escalaRepository;
         this.levitaRepository = levitaRepository;
-        this.musicasRepository = musicasRepository;
+        this.musicaRepository = musicaRepository;
     }
 
     public List<Escala> findAllEscalas(){
@@ -41,7 +41,7 @@ public class EscalaService {
         EscalaEntity entity = escalaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."));
         Escala escala = EscalaMapper.entityToDomain(entity);
-        escala.setMusicas(musicasRepository.findAllInEscala(escala.getId()).stream().map(MusicaMapper::entityToDomain).toList());
+//        escala.setMusicas(musicaRepository.findAllInEscala(escala.getId()).stream().map(MusicaMapper::entityToDomain).toList());
         return escala;
     }
 
@@ -65,7 +65,7 @@ public class EscalaService {
     }
 
     private List<Musica> findMusicas(List<UUID> musicasId){
-        return musicasRepository.findAllById(musicasId).stream().map(MusicaMapper::entityToDomain).toList();
+        return musicaRepository.findAllById(musicasId).stream().map(MusicaMapper::entityToDomain).toList();
     }
 
     private void validateInput(EscalaInput input){

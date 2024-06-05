@@ -15,6 +15,5 @@ public class MusicaEntity {
     private UUID id;
     private String nome;
     private String link;
-    @Column(name = "escala", columnDefinition = "uuid")
-    private UUID escala;
+    private String cifra;
 }

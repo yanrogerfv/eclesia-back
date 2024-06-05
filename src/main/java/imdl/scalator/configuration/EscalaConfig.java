@@ -2,7 +2,7 @@ package imdl.scalator.configuration;
 
 import imdl.scalator.persistence.EscalaRepository;
 import imdl.scalator.persistence.LevitaRepository;
-import imdl.scalator.persistence.MusicasRepository;
+import imdl.scalator.persistence.MusicaRepository;
 import imdl.scalator.service.EscalaService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class EscalaConfig {
 
     @Bean
-    public EscalaService escalaService(EscalaRepository escalaRepository, LevitaRepository levitaRepository, MusicasRepository musicasRepository){
-        return new EscalaService(escalaRepository, levitaRepository, musicasRepository);
+    public EscalaService escalaService(EscalaRepository escalaRepository, LevitaRepository levitaRepository, MusicaRepository musicaRepository){
+        return new EscalaService(escalaRepository, levitaRepository, musicaRepository);
     }
 
 }

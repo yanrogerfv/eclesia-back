@@ -33,8 +33,14 @@ public class EscalaController {
 
     @PostMapping
     @Operation(summary = "Criar uma nova escala.")
-    public Escala createEscala(EscalaInput input){
+    public Escala createEscala(@RequestBody EscalaInput input){
         return escalaService.create(input);
+    }
+
+    @PostMapping
+    @Operation(summary = "Adiciona uma música na escala.")
+    public Escala addMusica(){
+        return null;
     }
 
 }

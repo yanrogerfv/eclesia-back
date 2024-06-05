@@ -1,12 +1,9 @@
-package imdl.scalator.domain;
+package imdl.scalator.domain.input;
 
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
-public class Musica {
-    private UUID id;
+public class MusicaInput {
     private String nome;
     private String link;
     private String cifra;

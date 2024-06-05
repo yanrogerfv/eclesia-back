@@ -10,7 +10,16 @@ public class MusicaMapper {
         domain.setId(entity.getId());
         domain.setNome(entity.getNome());
         domain.setLink(entity.getLink());
-        domain.setEscala(entity.getEscala());
+        domain.setCifra(entity.getCifra());
         return domain;
+    }
+
+    public static MusicaEntity domainToEntity(Musica domain){
+        MusicaEntity entity = new MusicaEntity();
+        entity.setId(domain.getId());
+        entity.setNome(domain.getNome());
+        entity.setLink(domain.getLink());
+        entity.setCifra(domain.getCifra());
+        return entity;
     }
 }

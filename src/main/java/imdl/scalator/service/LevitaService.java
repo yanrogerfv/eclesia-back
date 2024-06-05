@@ -38,7 +38,7 @@ public class LevitaService {
     public Levita update(UUID id, LevitaInput input){
         validateInput(input);
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrado.")));
+                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         levita.setNome(input.getNome());
         levita.setInstrumento(Instrumento.values()[input.getInstrumento()]);
         levita.setContato(input.getContato());
@@ -50,7 +50,7 @@ public class LevitaService {
 
     public Levita changeDisponivel(UUID id){
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrado.")));
+                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         levita.setDisponivel(!levita.isDisponivel());
         levitaRepository.save(LevitaMapper.domainToEntity(levita));
         return levita;

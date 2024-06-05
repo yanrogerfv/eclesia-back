@@ -54,18 +54,38 @@ public class EscalaService {
 
     public Escala update(UUID id, EscalaInput input){
         EscalaEntity entity = escalaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."));
-        entity.setMinistro(levitaRepository.findById(input.getMinistro()).orElseThrow(() -> new EntityNotFoundException("")));
-        entity.setBaixo(levitaRepository.findById(input.getBaixo()).orElseThrow(() -> new EntityNotFoundException("")));
-        entity.setBateria(levitaRepository.findById(input.getBateria()).orElseThrow(() -> new EntityNotFoundException("")));
-        entity.setTeclado(levitaRepository.findById(input.getTeclado()).orElseThrow(() -> new EntityNotFoundException("")));
-        entity.setViolao(levitaRepository.findById(input.getViolao()).orElseThrow(() -> new EntityNotFoundException("")));
+        entity.setMinistro(levitaRepository.findById(input.getMinistro()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
+        entity.setBaixo(levitaRepository.findById(input.getBaixo()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
+        entity.setBateria(levitaRepository.findById(input.getBateria()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
+        entity.setTeclado(levitaRepository.findById(input.getTeclado()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
+        entity.setViolao(levitaRepository.findById(input.getViolao()).orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         //setar o back
         entity.setData(input.getData());
         return EscalaMapper.entityToDomain(entity);
     }
 
-    private List<Musica> findMusicas(List<UUID> musicasId){
+    private List<Musica> findMusicasInEscala(List<UUID> musicasId){
         return musicaRepository.findAllById(musicasId).stream().map(MusicaMapper::entityToDomain).toList();
+    }
+
+    private Escala addMusicaInEscala(UUID escalaId, UUID musicaId){
+        Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(escalaId)
+                .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada")));
+        List<Musica> musicas = escala.getMusicas();
+        musicas.add(MusicaMapper.entityToDomain(musicaRepository.findById(musicaId)
+                .orElseThrow(() -> new EntityNotFoundException("Música não encontrada"))));
+        escala.setMusicas(musicas);
+        return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
+    }
+
+    private Escala removeMusicaInEscala(UUID escalaId, UUID musicaId){
+        Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(escalaId)
+                .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada")));
+        List<Musica> musicas = escala.getMusicas();
+        musicas.remove(MusicaMapper.entityToDomain(musicaRepository.findById(musicaId)
+                .orElseThrow(() -> new EntityNotFoundException("Música não encontrada"))));
+        escala.setMusicas(musicas);
+        return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
 
     private void validateInput(EscalaInput input){

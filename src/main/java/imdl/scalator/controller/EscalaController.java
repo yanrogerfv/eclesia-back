@@ -38,15 +38,21 @@ public class EscalaController {
         return escalaService.create(input);
     }
 
-    @PostMapping
-    @Operation(summary = "Adiciona uma música na escala.")
-    public Escala addMusica(){
-        return null;
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualiza uma escala.")
+    public Escala updateEscala(@PathVariable UUID escalaId, @RequestBody EscalaInput input){
+        return escalaService.update(escalaId, input);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar uma escala.")
     public void deleteMusica(@PathVariable UUID id){
         escalaService.deleteEscala(id);
+    }
+
+    @PostMapping("/musica/{id}")
+    @Operation(summary = "Adiciona uma música na escala.")
+    public Escala addMusicaInEscala(@PathVariable UUID escalaId, @RequestParam UUID musicaId){
+        return escalaService.addMusicaInEscala(escalaId, musicaId);
     }
 }

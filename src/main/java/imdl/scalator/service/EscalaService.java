@@ -69,11 +69,11 @@ public class EscalaService {
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
     }
 
-    private List<Musica> findMusicasInEscala(List<UUID> musicasId){
+    public List<Musica> findMusicasInEscala(List<UUID> musicasId){
         return musicaRepository.findAllById(musicasId).stream().map(MusicaMapper::entityToDomain).toList();
     }
 
-    private Escala addMusicaInEscala(UUID escalaId, UUID musicaId){
+    public Escala addMusicaInEscala(UUID escalaId, UUID musicaId){
         Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(escalaId)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada")));
         List<Musica> musicas = escala.getMusicas();
@@ -83,7 +83,7 @@ public class EscalaService {
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
 
-    private Escala removeMusicaInEscala(UUID escalaId, UUID musicaId){
+    public Escala removeMusicaInEscala(UUID escalaId, UUID musicaId){
         Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(escalaId)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada")));
         List<Musica> musicas = escala.getMusicas();

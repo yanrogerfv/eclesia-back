@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class LevitaConfig {
-
     @Bean
     public LevitaService levitaService(LevitaRepository levitaRepository){
         return new LevitaService(levitaRepository);

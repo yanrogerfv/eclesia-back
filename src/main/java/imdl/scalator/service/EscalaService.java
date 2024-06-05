@@ -30,11 +30,11 @@ public class EscalaService {
     }
 
     public List<Escala> findAllEscalas(){
-        return null;
+        return escalaRepository.findAll().stream().map(EscalaMapper::entityToDomain).toList();
     }
 
-    public List<Escala> findMonthEscalas(){
-        return null;
+    public List<Escala> findMonthEscalas(int month){
+        return escalaRepository.findAllInMonth(month).stream().map(EscalaMapper::entityToDomain).toList();
     }
 
     public Escala findById(UUID id){
@@ -113,7 +113,7 @@ public class EscalaService {
         if(input.getTeclado() != null)
             escala.setTeclado(findLevita(input.getTeclado()));
         if(input.getViolao() != null)
-            escala.setViolao(findLevita(input.getTeclado()));
+            escala.setViolao(findLevita(input.getViolao()));
         if(input.getBacks() != null)
             escala.setBack(levitaRepository.findAllById(input.getBacks()).stream().map(LevitaMapper::entityToDomain).toList());
         if (input.getObservacoes() != null)

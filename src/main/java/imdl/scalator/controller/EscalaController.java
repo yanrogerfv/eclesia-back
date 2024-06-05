@@ -26,10 +26,10 @@ public class EscalaController {
         return escalaService.findAllEscalas();
     }
 
-    @GetMapping("/{mes}")
+    @GetMapping("/{month}")
     @Operation(summary = "Lista com todas as escalas de um determinado mes.")
-    public List<Escala> listInPeriodo(){
-        return escalaService.findMonthEscalas();
+    public List<Escala> findByMonth(@PathVariable int month){
+        return escalaService.findMonthEscalas(month);
     }
 
     @PostMapping

@@ -1,6 +1,7 @@
 package imdl.scalator.controller;
 
 import imdl.scalator.domain.Escala;
+import imdl.scalator.domain.Musica;
 import imdl.scalator.domain.input.EscalaInput;
 import imdl.scalator.service.EscalaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,9 +53,22 @@ public class EscalaController {
         escalaService.deleteEscala(id);
     }
 
-    @PostMapping("/musica/{id}")
+
+    @GetMapping("/musicas")
+    @Operation(summary = "Lista as músicas em uma escala.")
+    public List<Musica> listMusicasInEscal(@RequestParam UUID escalaId){
+        return escalaService.findMusicasInEscala(escalaId);
+    }
+
+    @PostMapping("/musicas/{id}")
     @Operation(summary = "Adiciona uma música na escala.")
     public Escala addMusicaInEscala(@PathVariable UUID escalaId, @RequestParam UUID musicaId){
         return escalaService.addMusicaInEscala(escalaId, musicaId);
+    }
+
+    @DeleteMapping("/musicas/{id}")
+    @Operation(summary = "Remove uma música na escala.")
+    public Escala removeMusicaInEscala(@PathVariable UUID escalaId, @RequestParam UUID musicaId){
+        return escalaService.removeMusicaInEscala(escalaId, musicaId);
     }
 }

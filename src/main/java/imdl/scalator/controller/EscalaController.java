@@ -4,6 +4,7 @@ import imdl.scalator.domain.Escala;
 import imdl.scalator.domain.input.EscalaInput;
 import imdl.scalator.service.EscalaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @CrossOrigin
 @RestController
 @RequestMapping("v1/escala")
+@Tag(name = "v1/Escala", description = "Criar, Editar e Listar Escalas")
 public class EscalaController {
 
     private final EscalaService escalaService;

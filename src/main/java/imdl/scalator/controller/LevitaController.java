@@ -4,6 +4,7 @@ import imdl.scalator.domain.Levita;
 import imdl.scalator.domain.input.LevitaInput;
 import imdl.scalator.service.LevitaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @CrossOrigin
 @RestController
 @RequestMapping("v1/levita")
+@Tag(name = "v1/Levita", description = "Criar, Editar e Listar Levitas")
 public class LevitaController {
 
     private final LevitaService levitaService;

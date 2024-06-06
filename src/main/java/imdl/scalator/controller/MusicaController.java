@@ -4,6 +4,7 @@ import imdl.scalator.domain.Musica;
 import imdl.scalator.domain.input.MusicaInput;
 import imdl.scalator.service.MusicaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @CrossOrigin
 @RestController
 @RequestMapping("v1/musicas")
+@Tag(name = "v1/Musicas", description = "Inserir, Editar e Listar Musicas")
 public class MusicaController {
 
     private final MusicaService musicaService;

@@ -72,6 +72,8 @@ public class EscalaService {
     }
 
     public List<Musica> findMusicasInEscala(UUID escalaId){
+        if(escalaRepository.findById(escalaId).isEmpty())
+            throw new EntityNotFoundException("Escala não encontrada.");
         return escalaRepository.findAllMusicasInEscala(escalaId).stream().map(MusicaMapper::entityToDomain).toList();
     }
 

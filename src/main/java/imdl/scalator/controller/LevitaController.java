@@ -28,6 +28,12 @@ public class LevitaController {
         return levitaService.findAll();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Retorna um levita à partir do seu ID.")
+    public Levita findById(@PathVariable UUID id){
+        return levitaService.findById(id);
+    }
+
     @PostMapping
     @Operation(summary = "Adiciona um novo levita ao banco.")
     public Levita addLevita(LevitaInput input){

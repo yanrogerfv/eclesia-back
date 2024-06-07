@@ -35,6 +35,12 @@ public class EscalaController {
         return escalaService.findMonthEscalas(month);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Retorna uma escala à partir de um ID.")
+    public Escala findById(@PathVariable UUID id){
+        return escalaService.findById(id);
+    }
+
     @PostMapping
     @Operation(summary = "Criar uma nova escala.")
     public Escala createEscala(@RequestBody EscalaInput input){

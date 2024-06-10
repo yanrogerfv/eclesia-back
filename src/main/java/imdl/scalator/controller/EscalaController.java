@@ -30,7 +30,7 @@ public class EscalaController {
     }
 
     @GetMapping("/{month}")
-    @Operation(summary = "Lista com todas as escalas de um determinado mes.")
+    @Operation(summary = "Lista com todas as escalas de um determinado mês.")
     public List<Escala> findByMonth(@PathVariable int month){
         return escalaService.findMonthEscalas(month);
     }

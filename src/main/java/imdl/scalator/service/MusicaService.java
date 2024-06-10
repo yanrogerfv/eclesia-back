@@ -22,6 +22,11 @@ public class MusicaService {
         return musicaRepository.findAll().stream().map(MusicaMapper::entityToDomain).toList();
     }
 
+    public Musica findById(UUID id){
+        return musicaRepository.findById(id).map(MusicaMapper::entityToDomain)
+                .orElseThrow(() -> new EntityNotFoundException("Música não encontrada."));
+    }
+
     public Musica addMusica(MusicaInput input){
         validate(input);
         Musica musica = inputToDomain(input);

@@ -28,6 +28,13 @@ public class MusicaController {
         return musicaService.listAll();
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Retorna uma múica pelo seu ID.")
+    public Musica findById(@PathVariable UUID id){
+        return musicaService.findById(id);
+    }
+
+
     @PostMapping
     @Operation(summary = "Adiciona uma nova música ao banco.")
     public Musica addMusica(@RequestBody MusicaInput input){

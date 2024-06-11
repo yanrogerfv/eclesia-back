@@ -11,10 +11,11 @@ public class Escala {
     private String titulo;
     private LocalDate data;
     private Levita ministro;
-    private Levita violao;
-    private Levita teclado;
     private Levita baixo;
     private Levita bateria;
+    private Levita guitarra;
+    private Levita teclado;
+    private Levita violao;
     private List<Levita> back;
     private List<Musica> musicas;
     private String observacoes;
@@ -73,6 +74,14 @@ public class Escala {
 
     public void setBateria(Levita bateria) {
         this.bateria = bateria;
+    }
+
+    public Levita getGuitarra() {
+        return guitarra;
+    }
+
+    public void setGuitarra(Levita guitarra) {
+        this.guitarra = guitarra;
     }
 
     public List<Levita> getBack() {

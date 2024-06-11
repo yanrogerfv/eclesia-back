@@ -27,17 +27,20 @@ public class EscalaEntity {
     @JoinColumn(name = "ministro_id", referencedColumnName = "levita_id")
     private LevitaEntity ministro;
     @ManyToOne
-    @JoinColumn(name = "violao_id", referencedColumnName = "levita_id")
-    private LevitaEntity violao;
-    @ManyToOne
-    @JoinColumn(name = "teclado_id", referencedColumnName = "levita_id")
-    private LevitaEntity teclado;
-    @ManyToOne
     @JoinColumn(name = "baixo_id", referencedColumnName = "levita_id")
     private LevitaEntity baixo;
     @ManyToOne
     @JoinColumn(name = "bateria_id", referencedColumnName = "levita_id")
     private LevitaEntity bateria;
+    @ManyToOne
+    @JoinColumn(name = "guitarra_id", referencedColumnName = "levita_id")
+    private LevitaEntity guitarra;
+    @ManyToOne
+    @JoinColumn(name = "teclado_id", referencedColumnName = "levita_id")
+    private LevitaEntity teclado;
+    @ManyToOne
+    @JoinColumn(name = "violao_id", referencedColumnName = "levita_id")
+    private LevitaEntity violao;
     @ManyToMany
     @JoinTable(
             name = "backs_in_escala",

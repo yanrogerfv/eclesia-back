@@ -34,7 +34,6 @@ public class MusicaController {
         return musicaService.findById(id);
     }
 
-
     @PostMapping
     @Operation(summary = "Adiciona uma nova música ao banco.")
     public Musica addMusica(@RequestBody MusicaInput input){
@@ -52,4 +51,6 @@ public class MusicaController {
     public void deleteMusica(@PathVariable UUID id){
         musicaService.deleteMusica(id);
     }
+
+
 }

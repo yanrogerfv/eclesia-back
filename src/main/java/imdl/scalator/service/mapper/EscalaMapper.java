@@ -15,6 +15,8 @@ public class EscalaMapper {
             domain.setBaixo(LevitaMapper.entityToDomain(entity.getBaixo()));
         if(entity.getBateria() != null)
             domain.setBateria(LevitaMapper.entityToDomain(entity.getBateria()));
+        if(entity.getGuitarra() != null)
+            domain.setGuitarra(LevitaMapper.entityToDomain(entity.getGuitarra()));
         if(entity.getTeclado() != null)
             domain.setTeclado(LevitaMapper.entityToDomain(entity.getTeclado()));
         if(entity.getViolao() != null)
@@ -40,6 +42,8 @@ public class EscalaMapper {
             entity.setBaixo(LevitaMapper.domainToEntity(domain.getBaixo()));
         if(domain.getBateria() != null)
             entity.setBateria(LevitaMapper.domainToEntity(domain.getBateria()));
+        if(domain.getGuitarra() != null)
+            entity.setGuitarra(LevitaMapper.domainToEntity(domain.getGuitarra()));
         if(domain.getTeclado() != null)
             entity.setTeclado(LevitaMapper.domainToEntity(domain.getTeclado()));
         if(domain.getViolao() != null)

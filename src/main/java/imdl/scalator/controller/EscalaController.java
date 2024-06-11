@@ -59,7 +59,7 @@ public class EscalaController {
         escalaService.deleteEscala(id);
     }
 
-
+    //Músicas na Escala
     @GetMapping("/musicas")
     @Operation(summary = "Lista as músicas em uma escala.")
     public List<Musica> listMusicasInEscal(@RequestParam UUID escalaId){

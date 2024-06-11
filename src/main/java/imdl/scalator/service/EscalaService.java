@@ -48,8 +48,7 @@ public class EscalaService {
     public Escala create(EscalaInput input){
         validateInput(input);
         Escala escala = inputToDomain(input);
-        escalaRepository.save(EscalaMapper.domainToEntity(escala));
-        return escala;
+        return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
 
     public Escala update(UUID id, EscalaInput input){

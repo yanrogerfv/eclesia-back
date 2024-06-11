@@ -50,9 +50,8 @@ public class EscalaMapper {
             entity.setViolao(LevitaMapper.domainToEntity(domain.getViolao()));
         if(domain.getBack() != null)
             entity.setBack(domain.getBack().stream().map(LevitaMapper::domainToEntity).toList());
-
-        entity.setMusicas(domain.getMusicas().stream().map(MusicaMapper::domainToEntity).toList());
-
+        if(domain.getMusicas() != null)
+            entity.setMusicas(domain.getMusicas().stream().map(MusicaMapper::domainToEntity).toList());
         if (domain.getObservacoes() != null)
             entity.setObservacoes(domain.getObservacoes());
         return entity;

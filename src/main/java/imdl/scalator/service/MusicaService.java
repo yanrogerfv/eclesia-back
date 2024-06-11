@@ -30,8 +30,7 @@ public class MusicaService {
     public Musica addMusica(MusicaInput input){
         validate(input);
         Musica musica = inputToDomain(input);
-        musicaRepository.save(MusicaMapper.domainToEntity(musica));
-        return musica;
+        return MusicaMapper.entityToDomain(musicaRepository.save(MusicaMapper.domainToEntity(musica)));
     }
 
     public Musica updateMusica(UUID id, MusicaInput input){
@@ -43,8 +42,7 @@ public class MusicaService {
             musica.setLink(input.getLink());
         if(input.getCifra() != null)
             musica.setCifra(input.getCifra());
-        musicaRepository.save(MusicaMapper.domainToEntity(musica));
-        return musica;
+        return MusicaMapper.entityToDomain(musicaRepository.save(MusicaMapper.domainToEntity(musica)));
     }
 
     public void deleteMusica(UUID id){

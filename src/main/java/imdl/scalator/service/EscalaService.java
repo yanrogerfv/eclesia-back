@@ -14,6 +14,8 @@ import imdl.scalator.service.mapper.EscalaMapper;
 import imdl.scalator.service.mapper.LevitaMapper;
 import imdl.scalator.service.mapper.MusicaMapper;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,6 +54,7 @@ public class EscalaService {
     }
 
     public Escala update(UUID id, EscalaInput input){
+        validateInput(input);
         Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
         if(input.getData() != null)
             escala.setData(input.getData());
@@ -137,6 +140,18 @@ public class EscalaService {
             escala.setBack(levitaRepository.findAllById(input.getBacks()).stream().map(LevitaMapper::entityToDomain).toList());
         if (input.getObservacoes() != null)
             escala.setObservacoes(input.getObservacoes());
+        switch (input.getData().getDayOfWeek()) {
+            case SUNDAY:
+                escala.setDomingo(true);
+                break;
+            case WEDNESDAY:
+                escala.setQuarta(true);
+                break;
+            default:
+                escala.setEspecial(true);
+                break;
+        }
+
         return escala;
     }
 

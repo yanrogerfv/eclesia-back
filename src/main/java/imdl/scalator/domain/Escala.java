@@ -8,8 +8,11 @@ import java.util.UUID;
 
 public class Escala {
     private UUID id;
-    private String titulo;
     private LocalDate data;
+    private String titulo;
+    private boolean quarta;
+    private boolean domingo;
+    private boolean especial;
     private Levita ministro;
     private Levita baixo;
     private Levita bateria;
@@ -34,6 +37,30 @@ public class Escala {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public boolean isQuarta() {
+        return quarta;
+    }
+
+    public void setQuarta(boolean quarta) {
+        this.quarta = quarta;
+    }
+
+    public boolean isDomingo() {
+        return domingo;
+    }
+
+    public void setDomingo(boolean domingo) {
+        this.domingo = domingo;
+    }
+
+    public boolean isEspecial() {
+        return especial;
+    }
+
+    public void setEspecial(boolean especial) {
+        this.especial = especial;
     }
 
     public Levita getMinistro() {

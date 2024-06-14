@@ -10,6 +10,9 @@ public class EscalaMapper {
         domain.setId(entity.getId());
         domain.setData(entity.getData());
         domain.setTitulo(entity.getTitulo());
+        domain.setQuarta(entity.isQuarta());
+        domain.setDomingo(entity.isDomingo());
+        domain.setEspecial(entity.isEspecial());
         domain.setMinistro(LevitaMapper.entityToDomain(entity.getMinistro()));
         if(entity.getBaixo() != null)
             domain.setBaixo(LevitaMapper.entityToDomain(entity.getBaixo()));
@@ -37,6 +40,9 @@ public class EscalaMapper {
             entity.setId(domain.getId());
         entity.setData(domain.getData());
         entity.setTitulo(domain.getTitulo());
+        entity.setQuarta(domain.isQuarta());
+        entity.setDomingo(domain.isDomingo());
+        entity.setEspecial(domain.isEspecial());
         entity.setMinistro(LevitaMapper.domainToEntity(domain.getMinistro()));
         if(domain.getBaixo() != null)
             entity.setBaixo(LevitaMapper.domainToEntity(domain.getBaixo()));

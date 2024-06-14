@@ -23,6 +23,10 @@ public class EscalaEntity {
     @Column(name = "titulo")
     private String titulo;
 
+    private boolean quarta;
+    private boolean domingo;
+    private boolean especial;
+
     @ManyToOne
     @JoinColumn(name = "ministro_id", referencedColumnName = "levita_id")
     private LevitaEntity ministro;

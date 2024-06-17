@@ -34,6 +34,12 @@ public class LevitaController {
         return levitaService.findById(id);
     }
 
+    @GetMapping("/instrumento/{inst}")
+    @Operation(summary = "Retorna todos os levitas que tocam um determinado instrumento.")
+    public List<Levita> findByInstrumento(@PathVariable int inst){
+        return levitaService.findAllByInstrument(inst);
+    }
+
     @PostMapping
     @Operation(summary = "Adiciona um novo levita ao banco.")
     public Levita addLevita(LevitaInput input){

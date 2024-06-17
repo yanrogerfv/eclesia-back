@@ -40,11 +40,8 @@ public class EscalaService {
     }
 
     public Escala findById(UUID id){
-        EscalaEntity entity = escalaRepository.findById(id)
+        return escalaRepository.findById(id).map(EscalaMapper::entityToDomain)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."));
-        Escala escala = EscalaMapper.entityToDomain(entity);
-//        escala.setMusicas(musicaRepository.findAllInEscala(escala.getId()).stream().map(MusicaMapper::entityToDomain).toList());
-        return escala;
     }
 
     public Escala create(EscalaInput input){

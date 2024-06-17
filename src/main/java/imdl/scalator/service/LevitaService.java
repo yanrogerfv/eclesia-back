@@ -22,8 +22,12 @@ public class LevitaService {
     public List<Levita> findAll(){
         return levitaRepository.findAll().stream().map(LevitaMapper::entityToDomain).toList();
     }
-    public List<Levita> findALlById(List<UUID> ids){
+    public List<Levita> findAllById(List<UUID> ids){
         return levitaRepository.findAllById(ids).stream().map(LevitaMapper::entityToDomain).toList();
+    }
+
+    public List<Levita> findAllByInstrument(int inst){
+        return levitaRepository.findAllByInstrumento(inst).stream().map(LevitaMapper::entityToDomain).toList();
     }
 
     public Levita findById(UUID id){

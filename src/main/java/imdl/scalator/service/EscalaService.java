@@ -148,7 +148,6 @@ public class EscalaService {
                 escala.setEspecial(true);
                 break;
         }
-
         return escala;
     }
 

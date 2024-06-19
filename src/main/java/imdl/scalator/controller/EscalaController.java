@@ -55,7 +55,7 @@ public class EscalaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar uma escala.")
-    public void deleteMusica(@PathVariable UUID id){
+    public void deleteEscala(@PathVariable UUID id){
         escalaService.deleteEscala(id);
     }
 

@@ -40,14 +40,19 @@ public class LevitaService {
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
     public Levita update(UUID id, LevitaInput input){
-        validateInput(input);
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
-        levita.setNome(input.getNome());
-        levita.setInstrumento(Instrumento.values()[input.getInstrumento()]);
-        levita.setContato(input.getContato());
-        levita.setEmail(input.getEmail());
-        levita.setDisponivel(input.isDisponivel());
+        if(input.getNome() != null)
+            if(input.getNome().isBlank())
+                throw new RogueException("O nome está vazio.");
+            else
+                levita.setNome(input.getNome());
+        if(input.getInstrumento() != null)
+            levita.setInstrumento(Instrumento.values()[input.getInstrumento()]);
+        if(input.getContato() != null)
+            levita.setContato(input.getContato());
+        if(input.getEmail() != null)
+            levita.setEmail(input.getEmail());
         levitaRepository.save(LevitaMapper.domainToEntity(levita));
         return levita;
     }
@@ -66,7 +71,7 @@ public class LevitaService {
     }
 
     private void validateInput(LevitaInput input){
-        if(input.getNome().isBlank())
+        if(input.getNome() == null || input.getNome().isBlank())
             throw new RogueException("O nome está vazio.");
         if(input.getInstrumento() == null)
             throw new RogueException("O instrumento está vazio.");

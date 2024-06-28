@@ -15,8 +15,11 @@ public class LevitaService {
 
     private final LevitaRepository levitaRepository;
 
-    public LevitaService(LevitaRepository levitaRepository) {
+    private final InstrumentoService instrumentoService;
+
+    public LevitaService(LevitaRepository levitaRepository, InstrumentoService instrumentoService) {
         this.levitaRepository = levitaRepository;
+        this.instrumentoService = instrumentoService;
     }
 
     public List<Levita> findAll(){
@@ -26,8 +29,8 @@ public class LevitaService {
         return levitaRepository.findAllById(ids).stream().map(LevitaMapper::entityToDomain).toList();
     }
 
-    public List<Levita> findAllByInstrument(int inst){
-        return levitaRepository.findAllByInstrumento(inst).stream().map(LevitaMapper::entityToDomain).toList();
+    public List<Levita> findAllByInstrument(Long instrumento){
+        return levitaRepository.findAllByInstrumento(instrumento).stream().map(LevitaMapper::entityToDomain).toList();
     }
 
     public Levita findById(UUID id){
@@ -47,8 +50,8 @@ public class LevitaService {
                 throw new RogueException("O nome está vazio.");
             else
                 levita.setNome(input.getNome());
-        if(input.getInstrumento() != null)
-            levita.setInstrumento(Instrumento.values()[input.getInstrumento()]);
+        if(input.getInstrumentos() != null)
+            levita.setInstrumentos(input.getInstrumentos().stream().map(instrumentoService::findById).toList());
         if(input.getContato() != null)
             levita.setContato(input.getContato());
         if(input.getEmail() != null)
@@ -62,6 +65,25 @@ public class LevitaService {
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
     }
 
+    public Levita addInstrumento(UUID id, Long instrumento){
+        Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
+        List<Instrumento> instrumentos = levita.getInstrumentos();
+        instrumentos.add(instrumentoService.findById(instrumento));
+        levita.setInstrumentos(instrumentos);
+        return levita;
+    }
+
+    public Levita removeInstrumento(UUID id, Long instrumento){
+        Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
+        List<Instrumento> instrumentos = levita.getInstrumentos();
+        if(!instrumentos.remove(instrumentoService.findById(instrumento)))
+            throw new EntityNotFoundException("Levita já não tocava tal instrumento.");
+        levita.setInstrumentos(instrumentos);
+        return levita;
+    }
+
     public Levita changeDisponivel(UUID id){
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
@@ -73,7 +95,7 @@ public class LevitaService {
     private void validateInput(LevitaInput input){
         if(input.getNome() == null || input.getNome().isBlank())
             throw new RogueException("O nome está vazio.");
-        if(input.getInstrumento() == null)
+        if(input.getInstrumentos() == null)
             throw new RogueException("O instrumento está vazio.");
         if((input.getContato() == null||input.getContato().isBlank())
                 && (input.getEmail() == null ||input.getEmail().isBlank()))
@@ -83,7 +105,7 @@ public class LevitaService {
     private Levita inputToDomain(LevitaInput input){
         Levita levita = new Levita();
         levita.setNome(input.getNome());
-        levita.setInstrumento(Instrumento.values()[input.getInstrumento()]);
+        levita.setInstrumentos(input.getInstrumentos().stream().map(instrumentoService::findById).toList());
         levita.setContato(input.getContato());
         levita.setEmail(input.getEmail());
         levita.setDisponivel(input.isDisponivel());

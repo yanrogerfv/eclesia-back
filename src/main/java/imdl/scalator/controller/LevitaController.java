@@ -34,10 +34,10 @@ public class LevitaController {
         return levitaService.findById(id);
     }
 
-    @GetMapping("/instrumento/{inst}")
+    @GetMapping("/instrumento/{instrumento}")
     @Operation(summary = "Retorna todos os levitas que tocam um determinado instrumento.")
-    public List<Levita> findByInstrumento(@PathVariable int inst){
-        return levitaService.findAllByInstrument(inst);
+    public List<Levita> findByInstrumento(@PathVariable Long instrumento){
+        return levitaService.findAllByInstrument(instrumento);
     }
 
     @PostMapping

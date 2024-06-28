@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface LevitaRepository extends JpaRepository<LevitaEntity, UUID> {
 
-    @Query("SELECT l FROM LevitaEntity l WHERE l.instrumento = :inst")
-    List<LevitaEntity> findAllByInstrumento(int inst);
+    @Query("SELECT l FROM LevitaEntity l LEFT JOIN l.instrumentos i WHERE i.id = :instrumento")
+    List<LevitaEntity> findAllByInstrumento(Long instrumento);
 }

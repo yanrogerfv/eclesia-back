@@ -16,11 +16,22 @@ public class LevitaEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String nome;
-    private int instrumento;
     private String contato;
     private String email;
     private boolean disponivel;
 
+    @ManyToMany
+    @JoinTable(
+            name = "levita_instrumentos",
+            joinColumns = @JoinColumn(name = "levita_id", referencedColumnName = "levita_id"),
+            inverseJoinColumns = @JoinColumn(name = "instrumento", referencedColumnName = "numero")
+    )
+    private List<InstrumentoEntity> instrumentos;
     @OneToMany
+    @JoinTable(
+            name = "levita_escalas",
+            joinColumns = @JoinColumn(name = "levita_id", referencedColumnName = "levita_id"),
+            inverseJoinColumns = @JoinColumn(name = "escala_id", referencedColumnName = "escala_id")
+    )
     private List<EscalaEntity> escalas = new ArrayList<>();
 }

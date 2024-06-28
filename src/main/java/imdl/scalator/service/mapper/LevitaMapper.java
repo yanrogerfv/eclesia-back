@@ -1,6 +1,5 @@
 package imdl.scalator.service.mapper;
 
-import imdl.scalator.domain.Instrumento;
 import imdl.scalator.domain.Levita;
 import imdl.scalator.entity.LevitaEntity;
 
@@ -10,7 +9,7 @@ public class LevitaMapper {
         Levita domain = new Levita();
         domain.setId(entity.getId());
         domain.setNome(entity.getNome());
-        domain.setInstrumento(Instrumento.values()[entity.getInstrumento()]);
+        domain.setInstrumentos(entity.getInstrumentos().stream().map(InstrumentoMapper::entityToDomain).toList());
         domain.setContato(entity.getContato());
         domain.setEmail(entity.getEmail());
         domain.setDisponivel(entity.isDisponivel());
@@ -21,7 +20,7 @@ public class LevitaMapper {
         LevitaEntity entity = new LevitaEntity();
         entity.setId(domain.getId());
         entity.setNome(domain.getNome());
-        entity.setInstrumento(domain.getInstrumento().ordinal());
+        entity.setInstrumentos(domain.getInstrumentos().stream().map(InstrumentoMapper::domainToEntity).toList());
         entity.setContato(domain.getContato());
         entity.setEmail(domain.getEmail());
         entity.setDisponivel(domain.isDisponivel());

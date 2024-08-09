@@ -6,29 +6,24 @@ import imdl.scalator.domain.Levita;
 import imdl.scalator.domain.Musica;
 import imdl.scalator.domain.exception.RogueException;
 import imdl.scalator.domain.input.EscalaInput;
-import imdl.scalator.entity.EscalaEntity;
 import imdl.scalator.persistence.EscalaRepository;
-import imdl.scalator.persistence.LevitaRepository;
-import imdl.scalator.persistence.MusicaRepository;
 import imdl.scalator.service.mapper.EscalaMapper;
-import imdl.scalator.service.mapper.LevitaMapper;
 import imdl.scalator.service.mapper.MusicaMapper;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public class EscalaService {
 
     private final EscalaRepository escalaRepository;
-    private final LevitaRepository levitaRepository;
-    private final MusicaRepository musicaRepository;
+    private final LevitaService levitaService;
+    private final MusicaService musicaService;
 
-    public EscalaService(EscalaRepository escalaRepository, LevitaRepository levitaRepository, MusicaRepository musicaRepository) {
+    public EscalaService(EscalaRepository escalaRepository, LevitaService levitaService, MusicaService musicaService) {
         this.escalaRepository = escalaRepository;
-        this.levitaRepository = levitaRepository;
-        this.musicaRepository = musicaRepository;
+        this.levitaService = levitaService;
+        this.musicaService = musicaService;
     }
 
     public List<Escala> findAllEscalas(){
@@ -72,7 +67,7 @@ public class EscalaService {
         if(input.getViolao() != null)
             escala.setViolao(findLevita(input.getViolao(), "Violão"));
         if(input.getBacks() != null)
-            escala.setBack(levitaRepository.findAllById(input.getBacks()).stream().map(LevitaMapper::entityToDomain).toList());
+            escala.setBack(levitaService.findAllById(input.getBacks()));
         if (input.getObservacoes() != null)
             escala.setObservacoes(input.getObservacoes());
         escalaRepository.save(EscalaMapper.domainToEntity(escala));
@@ -91,21 +86,17 @@ public class EscalaService {
     }
 
     public Escala addMusicaInEscala(UUID escalaId, UUID musicaId){
-        Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(escalaId)
-                .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada")));
+        Escala escala = findById(escalaId);
         List<Musica> musicas = escala.getMusicas();
-        musicas.add(MusicaMapper.entityToDomain(musicaRepository.findById(musicaId)
-                .orElseThrow(() -> new EntityNotFoundException("Música não encontrada"))));
+        musicas.add(musicaService.findById(musicaId));
         escala.setMusicas(musicas);
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
 
     public Escala removeMusicaInEscala(UUID escalaId, UUID musicaId){
-        Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(escalaId)
-                .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada")));
+        Escala escala = findById(escalaId);
         List<Musica> musicas = escala.getMusicas();
-        musicas.remove(MusicaMapper.entityToDomain(musicaRepository.findById(musicaId)
-                .orElseThrow(() -> new EntityNotFoundException("Música não encontrada"))));
+        musicas.remove(musicaService.findById(musicaId));
         escala.setMusicas(musicas);
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
@@ -134,7 +125,7 @@ public class EscalaService {
         if(input.getViolao() != null)
             escala.setViolao(findLevita(input.getViolao(), "Violão"));
         if(input.getBacks() != null)
-            escala.setBack(levitaRepository.findAllById(input.getBacks()).stream().map(LevitaMapper::entityToDomain).toList());
+            escala.setBack(levitaService.findAllById(input.getBacks()));
         if (input.getObservacoes() != null)
             escala.setObservacoes(input.getObservacoes());
         switch (input.getData().getDayOfWeek()) {
@@ -152,8 +143,7 @@ public class EscalaService {
     }
 
     private Levita findLevita(UUID levitaId, String instrumentista){
-        return LevitaMapper.entityToDomain(levitaRepository.findById(levitaId)
-                .orElseThrow(() -> new EntityNotFoundException(instrumentista + " não encontrada.")));
+        return levitaService.findById(levitaId);
     }
 
 }

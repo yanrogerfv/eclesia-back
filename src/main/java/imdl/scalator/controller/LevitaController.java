@@ -60,7 +60,7 @@ public class LevitaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar um levita.")
-    public void deleteMusica(@PathVariable UUID id){
+    public void deleteLevita(@PathVariable UUID id){
         levitaService.deleteLevita(id);
     }
 }

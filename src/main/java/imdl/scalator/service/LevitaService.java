@@ -8,6 +8,7 @@ import imdl.scalator.domain.input.LevitaInput;
 import imdl.scalator.persistence.LevitaRepository;
 import imdl.scalator.service.mapper.LevitaMapper;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,14 +24,16 @@ public class LevitaService {
     }
 
     public List<Levita> findAll(){
-        return levitaRepository.findAll().stream().map(LevitaMapper::entityToDomain).toList();
+        return levitaRepository.findAll().stream()
+                .map(LevitaMapper::entityToDomain).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
     public List<Levita> findAllById(List<UUID> ids){
         return levitaRepository.findAllById(ids).stream().map(LevitaMapper::entityToDomain).toList();
     }
 
     public List<Levita> findAllByInstrument(Long instrumento){
-        return levitaRepository.findAllByInstrumento(instrumento).stream().map(LevitaMapper::entityToDomain).toList();
+        return levitaRepository.findAllByInstrumento(instrumento).stream()
+                .map(LevitaMapper::entityToDomain).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
 
     public Levita findById(UUID id){

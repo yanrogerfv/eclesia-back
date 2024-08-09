@@ -35,10 +35,10 @@ public class EscalaController {
         return escalaService.findMonthEscalas(month);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{escalaId}")
     @Operation(summary = "Retorna uma escala à partir de um ID.")
-    public Escala findById(@PathVariable UUID id){
-        return escalaService.findById(id);
+    public Escala findById(@PathVariable UUID escalaId){
+        return escalaService.findById(escalaId);
     }
 
     @PostMapping
@@ -47,7 +47,7 @@ public class EscalaController {
         return escalaService.create(input);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{escalaId}")
     @Operation(summary = "Atualiza uma escala.")
     public Escala updateEscala(@PathVariable UUID escalaId, @RequestBody EscalaInput input){
         return escalaService.update(escalaId, input);
@@ -55,8 +55,8 @@ public class EscalaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar uma escala.")
-    public void deleteEscala(@PathVariable UUID id){
-        escalaService.deleteEscala(id);
+    public void deleteEscala(@PathVariable UUID escalaId){
+        escalaService.deleteEscala(escalaId);
     }
 
     //Músicas na Escala
@@ -66,13 +66,13 @@ public class EscalaController {
         return escalaService.findMusicasInEscala(escalaId);
     }
 
-    @PostMapping("/musicas/{id}")
+    @PostMapping("/musicas/{escalaId}")
     @Operation(summary = "Adiciona uma música na escala.")
     public Escala addMusicaInEscala(@PathVariable UUID escalaId, @RequestParam UUID musicaId){
         return escalaService.addMusicaInEscala(escalaId, musicaId);
     }
 
-    @DeleteMapping("/musicas/{id}")
+    @DeleteMapping("/musicas/{escalaId}")
     @Operation(summary = "Remove uma música na escala.")
     public Escala removeMusicaInEscala(@PathVariable UUID escalaId, @RequestParam UUID musicaId){
         return escalaService.removeMusicaInEscala(escalaId, musicaId);

@@ -11,6 +11,7 @@ import imdl.scalator.service.mapper.EscalaMapper;
 import imdl.scalator.service.mapper.MusicaMapper;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class EscalaService {
     }
 
     public List<Escala> findAllEscalas(){
-        return escalaRepository.findAll().stream().map(EscalaMapper::entityToDomain).toList();
+        return escalaRepository.findAll().stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
     }
 
     public List<Escala> findMonthEscalas(int month){

@@ -7,6 +7,7 @@ import imdl.scalator.domain.input.MusicaInput;
 import imdl.scalator.persistence.MusicaRepository;
 import imdl.scalator.service.mapper.MusicaMapper;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ public class MusicaService {
     }
 
     public List<Musica> listAll(){
-        return musicaRepository.findAll().stream().map(MusicaMapper::entityToDomain).toList();
+        return musicaRepository.findAll().stream().map(MusicaMapper::entityToDomain).sorted(Comparator.comparing(Musica::getNome)).toList();
     }
 
     public Musica findById(UUID id){

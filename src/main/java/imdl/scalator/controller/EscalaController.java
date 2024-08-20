@@ -29,7 +29,7 @@ public class EscalaController {
         return escalaService.findAllEscalas();
     }
 
-    @GetMapping("/{month}")
+    @GetMapping("/month/{month}")
     @Operation(summary = "Lista com todas as escalas de um determinado mês.")
     public List<Escala> findByMonth(@PathVariable int month){
         return escalaService.findMonthEscalas(month);
@@ -53,7 +53,7 @@ public class EscalaController {
         return escalaService.update(escalaId, input);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{escalaId}")
     @Operation(summary = "Deletar uma escala.")
     public void deleteEscala(@PathVariable UUID escalaId){
         escalaService.deleteEscala(escalaId);

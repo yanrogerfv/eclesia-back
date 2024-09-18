@@ -53,6 +53,18 @@ public class LevitaController {
         return levitaService.update(id, input);
     }
 
+    @PatchMapping("/add-instrumento/{id}")
+    @Operation(summary = "Adicionar um instrumento à um Levita.")
+    public Levita addInstrumento(@PathVariable UUID id, Long inst){
+        return levitaService.addInstrumento(id, inst);
+    }
+
+    @PatchMapping("/remove-instrumento/{id}")
+    @Operation(summary = "Remove um instrumento de um Levita.")
+    public Levita removeInstrumento(@PathVariable UUID id, Long inst){
+        return levitaService.removeInstrumento(id, inst);
+    }
+
     @PatchMapping
     @Operation(summary = "Muda a disponibilidade de um levita pelo seu ID.")
     public Levita changeDisponivel(@RequestBody UUID id){

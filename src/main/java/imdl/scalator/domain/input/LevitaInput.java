@@ -10,5 +10,5 @@ public class LevitaInput {
     private List<Long> instrumentos;
     private String contato;
     private String email;
-    private boolean disponivel;
+    private Boolean disponivel;
 }

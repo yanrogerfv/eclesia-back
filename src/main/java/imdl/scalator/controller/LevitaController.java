@@ -1,5 +1,6 @@
 package imdl.scalator.controller;
 
+import imdl.scalator.controller.filter.LevitaFilter;
 import imdl.scalator.domain.Levita;
 import imdl.scalator.domain.input.LevitaInput;
 import imdl.scalator.service.LevitaService;
@@ -24,8 +25,8 @@ public class LevitaController {
 
     @GetMapping
     @Operation(summary = "Lista todos os levitas.")
-    public List<Levita> listLevitas(){
-        return levitaService.findAll();
+    public List<Levita> listLevitas(LevitaFilter filter){
+        return levitaService.findAll(filter);
     }
 
     @GetMapping("/{id}")
@@ -42,7 +43,7 @@ public class LevitaController {
 
     @PostMapping
     @Operation(summary = "Adiciona um novo levita ao banco.")
-    public Levita addLevita(LevitaInput input){
+    public Levita addLevita(@RequestBody LevitaInput input){
         return levitaService.create(input);
     }
 

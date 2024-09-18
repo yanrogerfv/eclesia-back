@@ -1,5 +1,6 @@
 package imdl.scalator.service;
 
+import imdl.scalator.controller.filter.LevitaFilter;
 import imdl.scalator.domain.exception.EntityNotFoundException;
 import imdl.scalator.domain.Instrumento;
 import imdl.scalator.domain.Levita;
@@ -23,8 +24,8 @@ public class LevitaService {
         this.instrumentoService = instrumentoService;
     }
 
-    public List<Levita> findAll(){
-        return levitaRepository.findAll().stream()
+    public List<Levita> findAll(LevitaFilter filter){
+        return levitaRepository.findAll(filter.nome(), filter.instrumento(), filter.disponivel()).stream()
                 .map(LevitaMapper::entityToDomain).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
     public List<Levita> findAllById(List<UUID> ids){

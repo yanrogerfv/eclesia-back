@@ -3,6 +3,7 @@ package imdl.scalator.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,4 +35,5 @@ public class LevitaEntity {
             inverseJoinColumns = @JoinColumn(name = "escala_id", referencedColumnName = "escala_id")
     )
     private List<EscalaEntity> escalas = new ArrayList<>();
+    private List<LocalDate> agenda;
 }

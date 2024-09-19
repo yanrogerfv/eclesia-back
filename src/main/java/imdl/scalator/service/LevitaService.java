@@ -7,11 +7,11 @@ import imdl.scalator.domain.Levita;
 import imdl.scalator.domain.exception.RogueException;
 import imdl.scalator.domain.input.LevitaInput;
 import imdl.scalator.persistence.LevitaRepository;
+import imdl.scalator.service.mapper.InstrumentoMapper;
 import imdl.scalator.service.mapper.LevitaMapper;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 public class LevitaService {
 
@@ -32,6 +32,10 @@ public class LevitaService {
         return levitaRepository.findAllById(ids).stream().map(LevitaMapper::entityToDomain).toList();
     }
 
+    public List<Levita> findAllDisponivel(LocalDate date){
+        return levitaRepository.findAll().stream().map(LevitaMapper::entityToDomain)
+                .filter(levita -> !levita.getAgenda().contains(date)).toList();
+    }
     public List<Levita> findAllByInstrument(Long instrumento){
         return levitaRepository.findAllByInstrumento(instrumento).stream()
                 .map(LevitaMapper::entityToDomain).sorted(Comparator.comparing(Levita::getNome)).toList();
@@ -44,6 +48,7 @@ public class LevitaService {
     public Levita create(LevitaInput input){
         validateInput(input);
         Levita levita = inputToDomain(input);
+        levita.setAgenda(new ArrayList<>());
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
     public Levita update(UUID id, LevitaInput input){
@@ -72,14 +77,21 @@ public class LevitaService {
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
     }
 
-    public Levita addInstrumento(UUID id, Long instrumento){
+    public Levita addInstrumento(UUID id, Long codInstrumento){ // TODO FIX
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         List<Instrumento> instrumentos = levita.getInstrumentos();
-        if(instrumentos.contains(instrumentoService.findById(instrumento)))
+        if(instrumentos.stream().map(Instrumento::getId).toList().contains(codInstrumento))
             throw new RogueException("Levita já possui este instrumento.");
-        instrumentos.add(instrumentoService.findById(instrumento));
-        levita.setInstrumentos(instrumentos);
+        Instrumento instrumento = instrumentoService.findById(codInstrumento);
+        List<Instrumento> newInstrumentos = new ArrayList<>();
+        for (Instrumento value : instrumentos) {
+            if (instrumento.getId() < value.getId())
+                newInstrumentos.add(instrumento);
+            else
+                newInstrumentos.add(value);
+        }
+        levita.setInstrumentos(newInstrumentos);
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
 
@@ -87,10 +99,16 @@ public class LevitaService {
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         List<Instrumento> instrumentos = levita.getInstrumentos();
-        if(!instrumentos.contains(instrumentoService.findById(instrumento)))
+        if(!instrumentos.stream().map(Instrumento::getId).toList().contains(instrumento))
             throw new EntityNotFoundException("Levita já não possui este instrumento.");
-        instrumentos.remove(instrumentoService.findById(instrumento));
-        levita.setInstrumentos(instrumentos);
+
+        List<Instrumento> newInstrumentos = new ArrayList<>();
+        instrumentos.forEach(i -> {
+            if(!Objects.equals(i.getId(), instrumento))
+                newInstrumentos.add(i);
+        });
+
+        levita.setInstrumentos(newInstrumentos);
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
 
@@ -100,6 +118,19 @@ public class LevitaService {
         levita.setDisponivel(!levita.isDisponivel());
         levitaRepository.save(LevitaMapper.domainToEntity(levita));
         return levita;
+    }
+
+    public Levita addDataInAgenda(UUID id, LocalDate date){
+        Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Levita não encontrado.")));
+        List<LocalDate> agenda = levita.getAgenda();
+        if(agenda.contains(date))
+            throw new RogueException("Data já inserida.");
+        if(date.isBefore(LocalDate.now()))
+            throw new RogueException("Data já passou.");
+        agenda.add(date);
+        levita.setAgenda(agenda);
+        return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
 
     private void validateInput(LevitaInput input){

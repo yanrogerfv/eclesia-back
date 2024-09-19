@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface InstrumentoRepository extends JpaRepository<InstrumentoEntity, Long> {
 
+    boolean existsByNome(String nome);
 }

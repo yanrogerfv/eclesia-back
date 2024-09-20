@@ -116,6 +116,11 @@ public class LevitaService {
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
         levita.setDisponivel(!levita.isDisponivel());
+
+        List<LocalDate> agenda = levita.getAgenda();
+        agenda.removeIf(date -> date.isBefore(LocalDate.now().minusDays(30)));
+        levita.setAgenda(agenda);
+
         levitaRepository.save(LevitaMapper.domainToEntity(levita));
         return levita;
     }
@@ -123,7 +128,9 @@ public class LevitaService {
     public Levita addDataInAgenda(UUID id, LocalDate date){
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrado.")));
-        List<LocalDate> agenda = levita.getAgenda();
+        List<LocalDate> agenda = new ArrayList<>();
+        if(levita.getAgenda() != null)
+            agenda = levita.getAgenda();
         if(agenda.contains(date))
             throw new RogueException("Data já inserida.");
         if(date.isBefore(LocalDate.now()))

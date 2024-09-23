@@ -42,7 +42,7 @@ public class LevitaController {
 
     @PostMapping
     @Operation(summary = "Adiciona um novo levita ao banco.")
-    public Levita addLevita(LevitaInput input){
+    public Levita addLevita(@RequestBody LevitaInput input){
         return levitaService.create(input);
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/auth/role")
 public class RoleController {
 
     private final RoleService roleService;

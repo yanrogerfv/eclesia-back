@@ -1,7 +1,7 @@
-package imdl.auth.controller;
+package imdl.scalator.auth.controller;
 
-import imdl.auth.dto.RoleDTO;
-import imdl.auth.service.RoleService;
+import imdl.scalator.auth.dto.RoleDTO;
+import imdl.scalator.auth.service.RoleService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package imdl.auth.controller;
+package imdl.scalator.auth.controller;
 
-import imdl.auth.dto.UserDTO;
-import imdl.auth.service.UserService;
+import imdl.scalator.auth.dto.UserDTO;
+import imdl.scalator.auth.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 

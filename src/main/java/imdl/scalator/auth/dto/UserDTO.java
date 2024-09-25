@@ -1,6 +1,6 @@
-package imdl.auth.dto;
+package imdl.scalator.auth.dto;
 
-import imdl.auth.entity.UserEntity;
+import imdl.scalator.auth.entity.UserEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,9 +18,10 @@ public class UserDTO {
     public UserEntity toUser(){
         UserEntity user = new UserEntity();
         user.setId(this.getId());
-        user.setRole(this.getRole().toRole());
+        user.setRoleId(this.getRole().getId());
         user.setUsername(this.getUsername());
         user.setPasscode(this.getPasscode());
+        user.setLevitaId(this.getLevitaId());
         return user;
     }
     public static UserDTO toDTO(UserEntity user){
@@ -28,7 +29,7 @@ public class UserDTO {
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         dto.setPasscode(user.getPasscode());
-        dto.setLevitaId(user.getLevita().getId());
+        dto.setLevitaId(user.getLevitaId());
         return dto;
     }
 }

@@ -1,8 +1,8 @@
-package imdl.auth.service;
+package imdl.scalator.auth.service;
 
-import imdl.auth.dto.RoleDTO;
-import imdl.auth.entity.RoleEntity;
-import imdl.auth.repository.RoleRepository;
+import imdl.scalator.auth.dto.RoleDTO;
+import imdl.scalator.auth.entity.RoleEntity;
+import imdl.scalator.auth.repository.RoleRepository;
 import imdl.scalator.domain.exception.EntityNotFoundException;
 
 import java.util.List;

@@ -1,8 +1,8 @@
-package imdl.auth.configuration.bean;
+package imdl.scalator.auth.configuration.bean;
 
-import imdl.auth.repository.RoleRepository;
-import imdl.auth.repository.UserRepository;
-import imdl.auth.service.UserService;
+import imdl.scalator.auth.repository.RoleRepository;
+import imdl.scalator.auth.repository.UserRepository;
+import imdl.scalator.auth.service.UserService;
 import imdl.scalator.service.LevitaService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

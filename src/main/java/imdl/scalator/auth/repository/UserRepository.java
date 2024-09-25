@@ -1,6 +1,6 @@
-package imdl.auth.repository;
+package imdl.scalator.auth.repository;
 
-import imdl.auth.entity.UserEntity;
+import imdl.scalator.auth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

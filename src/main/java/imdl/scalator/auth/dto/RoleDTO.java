@@ -1,6 +1,6 @@
-package imdl.auth.dto;
+package imdl.scalator.auth.dto;
 
-import imdl.auth.entity.RoleEntity;
+import imdl.scalator.auth.entity.RoleEntity;
 import lombok.Data;
 
 import java.util.UUID;

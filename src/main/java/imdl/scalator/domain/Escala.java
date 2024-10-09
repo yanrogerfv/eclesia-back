@@ -23,15 +23,6 @@ public class Escala {
     private List<Musica> musicas;
     private String observacoes;
 
-    public void update(Escala escala){
-        if(escala.getData() != null)
-            escala.setData(escala.getData());
-        if(escala.getTitulo() != null)
-            escala.setTitulo(escala.getTitulo());
-        if(escala.getMinistro() != null)
-            escala.setMinistro(escala.getMinistro());
-    }
-
     public UUID getId() {
         return id;
     }

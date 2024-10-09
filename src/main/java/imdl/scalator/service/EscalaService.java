@@ -47,34 +47,31 @@ public class EscalaService {
     }
 
     public Escala update(UUID id, EscalaInput input){
+        validateInput(input);
         Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
-        /*if(input.getData() != null)
+        if(input.getData() != null)
             escala.setData(input.getData());
         if(input.getTitulo() != null && !input.getTitulo().isBlank())
             escala.setTitulo(input.getTitulo());
         else
             throw new RogueException("Título não pode estar vazio.");
         if(input.getMinistro() != null)
-            escala.setMinistro(findLevita(input.getMinistro(), "Ministro"));
+            escala.setMinistro(findLevita(input.getMinistro(), input.getData()));
         if(input.getBaixo() != null)
-            escala.setBaixo(findLevita(input.getBaixo(), "Baixista"));
+            escala.setBaixo(findLevita(input.getBaixo(), input.getData()));
         if(input.getBateria() != null)
-            escala.setBateria(findLevita(input.getBateria(), "Baterista"));
+            escala.setBateria(findLevita(input.getBateria(), input.getData()));
         if(input.getGuitarra() != null)
-            escala.setGuitarra(findLevita(input.getGuitarra(), "Guitarrista"));
+            escala.setGuitarra(findLevita(input.getGuitarra(), input.getData()));
         if(input.getTeclado() != null)
-            escala.setTeclado(findLevita(input.getTeclado(), "Tecladista"));
+            escala.setTeclado(findLevita(input.getTeclado(), input.getData()));
         if(input.getViolao() != null)
-            escala.setViolao(findLevita(input.getViolao(), "Violão"));
+            escala.setViolao(findLevita(input.getViolao(), input.getData()));
         if(input.getBacks() != null)
             escala.setBack(levitaService.findAllById(input.getBacks()));
         if (input.getObservacoes() != null)
             escala.setObservacoes(input.getObservacoes());
-        escalaRepository.save(EscalaMapper.domainToEntity(escala));*/
-        validateInput(input);
-        Escala update = inputToDomain(input);
-        update.setId(id);
-        escalaRepository.save(EscalaMapper.domainToEntity(update));
+        escalaRepository.save(EscalaMapper.domainToEntity(escala));
         return escala;
     }
 

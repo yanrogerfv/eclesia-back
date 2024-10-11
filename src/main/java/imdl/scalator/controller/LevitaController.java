@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,9 +66,21 @@ public class LevitaController {
         return levitaService.removeInstrumento(id, inst);
     }
 
-    @PatchMapping
+    @GetMapping("/agenda")
+    @Operation(summary = "Listagem de Levitas disponíveis para uma data.")
+    public List<Levita> listDisponivelInData(@RequestParam LocalDate date){
+        return levitaService.findAllDisponivel(date);
+    }
+
+    @PatchMapping("/agenda/{id}")
+    @Operation(summary = "Adiciona uma data à agenda de um Levita.")
+    public Levita addDataInAgenda(@PathVariable UUID id, @RequestParam LocalDate date){
+        return levitaService.addDataInAgenda(id, date);
+    }
+
+    @PatchMapping("/disponivel/{id}")
     @Operation(summary = "Muda a disponibilidade de um levita pelo seu ID.")
-    public Levita changeDisponivel(@RequestBody UUID id){
+    public Levita changeDisponivel(@PathVariable UUID id){
         return levitaService.changeDisponivel(id);
     }
 

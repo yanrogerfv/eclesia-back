@@ -2,6 +2,7 @@ package imdl.scalator.domain;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ public class Levita {
     private String contato;
     private String email;
     private boolean disponivel;
+    private List<LocalDate> agenda;
 
     public UUID getId() {
         return id;
@@ -59,5 +61,13 @@ public class Levita {
 
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
+    }
+
+    public List<LocalDate> getAgenda() {
+        return agenda;
+    }
+
+    public void setAgenda(List<LocalDate> agenda) {
+        this.agenda = agenda;
     }
 }

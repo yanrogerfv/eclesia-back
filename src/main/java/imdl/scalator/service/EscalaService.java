@@ -56,17 +56,17 @@ public class EscalaService {
         else
             throw new RogueException("Título não pode estar vazio.");
         if(input.getMinistro() != null)
-            escala.setMinistro(findLevita(input.getMinistro(), "Ministro"));
+            escala.setMinistro(findLevita(input.getMinistro(), input.getData()));
         if(input.getBaixo() != null)
-            escala.setBaixo(findLevita(input.getBaixo(), "Baixista"));
+            escala.setBaixo(findLevita(input.getBaixo(), input.getData()));
         if(input.getBateria() != null)
-            escala.setBateria(findLevita(input.getBateria(), "Baterista"));
+            escala.setBateria(findLevita(input.getBateria(), input.getData()));
         if(input.getGuitarra() != null)
-            escala.setGuitarra(findLevita(input.getGuitarra(), "Guitarrista"));
+            escala.setGuitarra(findLevita(input.getGuitarra(), input.getData()));
         if(input.getTeclado() != null)
-            escala.setTeclado(findLevita(input.getTeclado(), "Tecladista"));
+            escala.setTeclado(findLevita(input.getTeclado(), input.getData()));
         if(input.getViolao() != null)
-            escala.setViolao(findLevita(input.getViolao(), "Violão"));
+            escala.setViolao(findLevita(input.getViolao(), input.getData()));
         if(input.getBacks() != null)
             escala.setBack(levitaService.findAllById(input.getBacks()));
         if (input.getObservacoes() != null)
@@ -104,7 +104,9 @@ public class EscalaService {
 
     private void validateInput(EscalaInput input){
         if(input.getData() == null)
-            throw new RogueException("A escala está sem data");
+            throw new RogueException("A escala está sem data.");
+        if(input.getData().isBefore(LocalDate.now()))
+            throw new RogueException("Essa data já passou.");
         if(input.getTitulo() == null || input.getTitulo().isBlank())
             throw new RogueException("A escala está sem título.");
         if(input.getMinistro() == null)
@@ -114,19 +116,24 @@ public class EscalaService {
         Escala escala = new Escala();
         escala.setData(input.getData());
         escala.setTitulo(input.getTitulo());
-        escala.setMinistro(findLevita(input.getMinistro(), "Ministra"));
+        escala.setMinistro(findLevita(input.getMinistro(), input.getData()));
         if(input.getBaixo() != null)
-            escala.setBaixo(findLevita(input.getBaixo(), "Baixista"));
+            escala.setBaixo(findLevita(input.getBaixo(), input.getData()));
         if(input.getBateria() != null)
-            escala.setBateria(findLevita(input.getBateria(), "Baterista"));
+            escala.setBateria(findLevita(input.getBateria(), input.getData()));
         if(input.getGuitarra() != null)
-            escala.setGuitarra(findLevita(input.getGuitarra(), "Guitarrista"));
+            escala.setGuitarra(findLevita(input.getGuitarra(), input.getData()));
         if(input.getTeclado() != null)
-            escala.setTeclado(findLevita(input.getTeclado(), "Tecladista"));
+            escala.setTeclado(findLevita(input.getTeclado(), input.getData()));
         if(input.getViolao() != null)
-            escala.setViolao(findLevita(input.getViolao(), "Violão"));
-        if(input.getBacks() != null)
+            escala.setViolao(findLevita(input.getViolao(), input.getData()));
+        if(input.getBacks() != null) {
             escala.setBack(levitaService.findAllById(input.getBacks()));
+            escala.getBack().forEach(levita -> {
+                if(levita.getAgenda().contains(input.getData()))
+                    throw new RogueException(levita.getNome() + " não está disponível para essa data.");
+            });
+        }
         if (input.getObservacoes() != null)
             escala.setObservacoes(input.getObservacoes());
         switch (input.getData().getDayOfWeek()) {
@@ -143,8 +150,11 @@ public class EscalaService {
         return escala;
     }
 
-    private Levita findLevita(UUID levitaId, String instrumentista){
-        return levitaService.findById(levitaId);
+    private Levita findLevita(UUID levitaId, LocalDate data){
+        Levita levita = levitaService.findById(levitaId);
+        if(levita.getAgenda().contains(data))
+            throw new RogueException(levita.getNome()+" está indisponível para essa data.");
+        return levita;
     }
 
 }

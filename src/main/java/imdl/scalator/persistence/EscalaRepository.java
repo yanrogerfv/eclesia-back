@@ -14,6 +14,9 @@ public interface EscalaRepository extends JpaRepository<EscalaEntity, UUID> {
     @Query("SELECT e FROM EscalaEntity e WHERE MONTH(e.data) = :month")
     List<EscalaEntity> findAllInMonth(int month);
 
+    @Query("SELECT e FROM EscalaEntity e WHERE e.data >= :atual AND e.data <= :limite")
+    List<EscalaEntity> findNext(LocalDate atual, LocalDate limite);
+
     @Query("SELECT e.musicas FROM EscalaEntity e WHERE e.id = :escalaId")
     List<MusicaEntity> findAllMusicasInEscala(UUID escalaId);
 

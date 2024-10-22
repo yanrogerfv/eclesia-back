@@ -1,7 +1,5 @@
 package imdl.scalator.domain;
 
-import lombok.Data;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -9,11 +7,10 @@ import java.util.UUID;
 public class Levita {
     private UUID id;
     private String nome;
-    private List<Instrumento> instrumentos;
-    private String contato;
     private String email;
-    private boolean disponivel;
+    private String contato;
     private List<LocalDate> agenda;
+    private List<Instrumento> instrumentos;
 
     public UUID getId() {
         return id;
@@ -31,13 +28,6 @@ public class Levita {
         this.nome = nome;
     }
 
-    public List<Instrumento> getInstrumentos() {
-        return instrumentos;
-    }
-
-    public void setInstrumentos(List<Instrumento> instrumentos) {
-        this.instrumentos = instrumentos;
-    }
 
     public String getContato() {
         return contato;
@@ -55,19 +45,19 @@ public class Levita {
         this.email = email;
     }
 
-    public boolean isDisponivel() {
-        return disponivel;
-    }
-
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel;
-    }
-
     public List<LocalDate> getAgenda() {
         return agenda;
     }
 
     public void setAgenda(List<LocalDate> agenda) {
         this.agenda = agenda;
+    }
+
+    public List<Instrumento> getInstrumentos() {
+        return instrumentos;
+    }
+
+    public void setInstrumentos(List<Instrumento> instrumentos) {
+        this.instrumentos = instrumentos;
     }
 }

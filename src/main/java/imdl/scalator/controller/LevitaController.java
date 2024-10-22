@@ -78,10 +78,10 @@ public class LevitaController {
         return levitaService.addDataInAgenda(id, date);
     }
 
-    @PatchMapping("/disponivel/{id}")
+    @PutMapping("/agenta/{id}")
     @Operation(summary = "Muda a disponibilidade de um levita pelo seu ID.")
     public Levita changeDisponivel(@PathVariable UUID id){
-        return levitaService.changeDisponivel(id);
+        return levitaService.updateAgentaFromALevita(id);
     }
 
     @DeleteMapping("/{id}")

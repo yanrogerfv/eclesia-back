@@ -35,6 +35,12 @@ public class EscalaController {
         return escalaService.findMonthEscalas(month);
     }
 
+    @GetMapping("/next")
+    @Operation(summary = "Lista com as próximas escalas.")
+    public List<Escala> findNextEscalas(){
+        return escalaService.findNextEscalas();
+    }
+
     @GetMapping("/{escalaId}")
     @Operation(summary = "Retorna uma escala à partir de um ID.")
     public Escala findById(@PathVariable UUID escalaId){

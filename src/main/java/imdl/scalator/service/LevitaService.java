@@ -7,7 +7,6 @@ import imdl.scalator.domain.Levita;
 import imdl.scalator.domain.exception.RogueException;
 import imdl.scalator.domain.input.LevitaInput;
 import imdl.scalator.persistence.LevitaRepository;
-import imdl.scalator.service.mapper.InstrumentoMapper;
 import imdl.scalator.service.mapper.LevitaMapper;
 
 import java.time.LocalDate;
@@ -66,8 +65,6 @@ public class LevitaService {
             levita.setContato(input.getContato());
         if(input.getEmail() != null)
             levita.setEmail(input.getEmail());
-        if(input.getDisponivel() != null)
-            levita.setDisponivel(input.getDisponivel());
         levitaRepository.save(LevitaMapper.domainToEntity(levita));
         return levita;
     }
@@ -112,10 +109,9 @@ public class LevitaService {
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
 
-    public Levita changeDisponivel(UUID id){
+    public Levita updateAgentaFromALevita(UUID id){
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
-        levita.setDisponivel(!levita.isDisponivel());
 
         List<LocalDate> agenda = levita.getAgenda();
         agenda.removeIf(date -> date.isBefore(LocalDate.now().minusDays(30)));
@@ -156,7 +152,6 @@ public class LevitaService {
         levita.setInstrumentos(input.getInstrumentos().stream().map(instrumentoService::findById).toList());
         levita.setContato(input.getContato());
         levita.setEmail(input.getEmail());
-        levita.setDisponivel(input.getDisponivel());
         return levita;
     }
 }

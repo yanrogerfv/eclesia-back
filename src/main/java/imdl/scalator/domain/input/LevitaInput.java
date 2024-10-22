@@ -7,8 +7,7 @@ import java.util.List;
 @Data
 public class LevitaInput {
     private String nome;
-    private List<Long> instrumentos;
-    private String contato;
     private String email;
-    private Boolean disponivel;
+    private String contato;
+    private List<Long> instrumentos;
 }

@@ -19,7 +19,6 @@ public class LevitaEntity {
     private String nome;
     private String contato;
     private String email;
-    private boolean disponivel;
 
     @ManyToMany
     @JoinTable(

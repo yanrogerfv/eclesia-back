@@ -32,7 +32,11 @@ public class EscalaService {
     }
 
     public List<Escala> findMonthEscalas(int month){
-        return escalaRepository.findAllInMonth(month).stream().map(EscalaMapper::entityToDomain).toList();
+        return escalaRepository.findAllInMonth(month).stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
+    }
+
+    public List<Escala> findNextEscalas() {
+        return escalaRepository.findNext(LocalDate.now(), LocalDate.now().plusDays(31)).stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
     }
 
     public Escala findById(UUID id){

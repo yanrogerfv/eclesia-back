@@ -1,7 +1,9 @@
 package imdl.scalator.controller.filter;
 
+import java.time.LocalDate;
+
 public record LevitaFilter(
     String nome,
     Long instrumento,
-    Boolean disponivel
+    LocalDate date
 ){}

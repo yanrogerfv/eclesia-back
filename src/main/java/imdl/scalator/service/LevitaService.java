@@ -24,7 +24,7 @@ public class LevitaService {
     }
 
     public List<Levita> findAll(LevitaFilter filter){
-        return levitaRepository.findAll(filter.nome(), filter.instrumento(), filter.disponivel()).stream()
+        return levitaRepository.findAll(filter.nome(), filter.instrumento()).stream()
                 .map(LevitaMapper::entityToDomain).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
     public List<Levita> findAllById(List<UUID> ids){

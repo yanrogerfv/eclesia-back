@@ -1,6 +1,7 @@
 package imdl.scalator.controller;
 
 import imdl.scalator.domain.Escala;
+import imdl.scalator.domain.EscalaResumida;
 import imdl.scalator.domain.Musica;
 import imdl.scalator.domain.input.EscalaInput;
 import imdl.scalator.service.EscalaService;
@@ -25,8 +26,13 @@ public class EscalaController {
 
     @GetMapping
     @Operation(summary = "Lista com todas as escalas.")
-    public List<Escala> listEscalas(){
+    public List<Escala> listFullEscalas(){
         return escalaService.findAllEscalas();
+    }
+    @GetMapping("/resumed")
+    @Operation(summary = "Lista com todas as escalas.")
+    public List<EscalaResumida> listResumedEscalas(){
+        return escalaService.findAllResumidas();
     }
 
     @GetMapping("/month/{month}")
@@ -37,8 +43,8 @@ public class EscalaController {
 
     @GetMapping("/next")
     @Operation(summary = "Lista com as próximas escalas.")
-    public List<Escala> findNextEscalas(){
-        return escalaService.findNextEscalas();
+    public List<EscalaResumida> findNextEscalas(){
+        return escalaService.findNextEscalasResumidas();
     }
 
     @GetMapping("/{escalaId}")

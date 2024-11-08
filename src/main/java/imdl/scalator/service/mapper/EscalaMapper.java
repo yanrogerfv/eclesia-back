@@ -1,7 +1,9 @@
 package imdl.scalator.service.mapper;
 
 import imdl.scalator.domain.Escala;
+import imdl.scalator.domain.EscalaResumida;
 import imdl.scalator.entity.EscalaEntity;
+import imdl.scalator.entity.EscalaResumidaEntity;
 
 public class EscalaMapper {
 
@@ -28,6 +30,30 @@ public class EscalaMapper {
             domain.setBack(entity.getBack().stream().map(LevitaMapper::entityToDomain).toList());
         if(entity.getMusicas()!=null && !entity.getMusicas().isEmpty())
             domain.setMusicas(entity.getMusicas().stream().map(MusicaMapper::entityToDomain).toList());
+        if(entity.getObservacoes() != null)
+            domain.setObservacoes(entity.getObservacoes());
+        return domain;
+    }
+
+    public static EscalaResumida entityToDomainResumida(EscalaResumidaEntity entity){
+        EscalaResumida domain = new EscalaResumida();
+        domain.setId(entity.getId());
+        domain.setData(entity.getData());
+        domain.setTitulo(entity.getTitulo());
+        domain.setQuarta(entity.isQuarta());
+        domain.setDomingo(entity.isDomingo());
+        domain.setEspecial(entity.isEspecial());
+        domain.setMinistro(entity.getMinistroNome());
+        if(entity.getBaixoNome() != null)
+            domain.setBaixo(entity.getBaixoNome());
+        if(entity.getBateriaNome() != null)
+            domain.setBateria(entity.getBateriaNome());
+        if(entity.getGuitarraNome() != null)
+            domain.setGuitarra(entity.getGuitarraNome());
+        if(entity.getTecladoNome() != null)
+            domain.setTeclado(entity.getTecladoNome());
+        if(entity.getViolaoNome() != null)
+            domain.setViolao(entity.getViolaoNome());
         if(entity.getObservacoes() != null)
             domain.setObservacoes(entity.getObservacoes());
         return domain;

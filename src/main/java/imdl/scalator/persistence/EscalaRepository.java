@@ -1,6 +1,7 @@
 package imdl.scalator.persistence;
 
 import imdl.scalator.entity.EscalaEntity;
+import imdl.scalator.entity.EscalaResumidaEntity;
 import imdl.scalator.entity.MusicaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +17,12 @@ public interface EscalaRepository extends JpaRepository<EscalaEntity, UUID> {
 
     @Query("SELECT e FROM EscalaEntity e WHERE e.data >= :atual AND e.data <= :limite")
     List<EscalaEntity> findNext(LocalDate atual, LocalDate limite);
+
+    @Query("SELECT e FROM EscalaResumidaEntity e WHERE e.data >= :atual AND e.data <= :limite")
+    List<EscalaResumidaEntity> findNextResumidas(LocalDate atual, LocalDate limite);
+
+    @Query("SELECT e FROM EscalaResumidaEntity e")
+    List<EscalaResumidaEntity> findAllResumida();
 
     @Query("SELECT e.musicas FROM EscalaEntity e WHERE e.id = :escalaId")
     List<MusicaEntity> findAllMusicasInEscala(UUID escalaId);

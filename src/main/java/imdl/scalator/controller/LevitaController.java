@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("v1/levita")
 @Tag(name = "v1/Levita", description = "Criar, Editar e Listar Levitas")
-public class LevitaController {
+public class  LevitaController {
 
     private final LevitaService levitaService;
 

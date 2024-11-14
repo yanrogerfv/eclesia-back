@@ -33,7 +33,11 @@ public class LevitaService {
 
     public List<Levita> findAllDisponivel(LocalDate date){
         return levitaRepository.findAll().stream().map(LevitaMapper::entityToDomain)
-                .filter(levita -> !levita.getAgenda().contains(date)).toList();
+                .filter(levita -> {
+                    if(levita.getAgenda() == null)
+                        return true;
+                    return !levita.getAgenda().contains(date);
+                }).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
     public List<Levita> findAllByInstrument(Long instrumento){
         return levitaRepository.findAllByInstrumento(instrumento).stream()

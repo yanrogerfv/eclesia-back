@@ -8,7 +8,7 @@ import lombok.Data;
 @Table(name = "instrumentos")
 public class InstrumentoEntity {
     @Id
-    @Column(name = "numero")
+    @Column(name = "instrumento_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;

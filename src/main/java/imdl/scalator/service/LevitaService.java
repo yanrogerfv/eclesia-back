@@ -58,23 +58,22 @@ public class LevitaService {
         levita.setAgenda(new ArrayList<>());
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
-    public Levita update(UUID id, LevitaInput input){
-        Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
+    public Levita update(LevitaInput input){
+        Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(input.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
-        if(input.getNome() != null) {
+        if(input.getNome() != null)
             if (input.getNome().isBlank())
                 throw new RogueException("O nome está vazio.");
-            else
-                levita.setNome(input.getNome());
-        }
+            else levita.setNome(input.getNome());
         if(input.getInstrumentos() != null)
             levita.setInstrumentos(input.getInstrumentos().stream().map(instrumentoService::findById).toList());
         if(input.getContato() != null)
             levita.setContato(input.getContato());
         if(input.getEmail() != null)
             levita.setEmail(input.getEmail());
-        levitaRepository.save(LevitaMapper.domainToEntity(levita));
-        return levita;
+        if(input.getDescricao() != null)
+            levita.setDescricao(input.getDescricao());
+        return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
 
     public void deleteLevita(UUID id){
@@ -158,10 +157,13 @@ public class LevitaService {
 
     private Levita inputToDomain(LevitaInput input){
         Levita levita = new Levita();
+        if (input.getId() != null)
+            levita.setId(input.getId());
         levita.setNome(input.getNome());
         levita.setInstrumentos(input.getInstrumentos().stream().map(instrumentoService::findById).toList());
         levita.setContato(input.getContato());
         levita.setEmail(input.getEmail());
+        levita.setDescricao(input.getDescricao());
         return levita;
     }
 }

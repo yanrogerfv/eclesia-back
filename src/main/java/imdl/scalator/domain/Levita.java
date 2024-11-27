@@ -9,6 +9,7 @@ public class Levita {
     private String nome;
     private String email;
     private String contato;
+    private String descricao;
     private List<LocalDate> agenda;
     private List<Instrumento> instrumentos;
 
@@ -28,7 +29,6 @@ public class Levita {
         this.nome = nome;
     }
 
-
     public String getContato() {
         return contato;
     }
@@ -43,6 +43,14 @@ public class Levita {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public List<LocalDate> getAgenda() {

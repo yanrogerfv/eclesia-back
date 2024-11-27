@@ -48,10 +48,10 @@ public class  LevitaController {
         return levitaService.create(input);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     @Operation(summary = "Atualiza as informaçoes de um levita pelo seu ID.")
-    public Levita updateLevita(@PathVariable UUID id, @RequestBody LevitaInput input){
-        return levitaService.update(id, input);
+    public Levita updateLevita(@RequestBody LevitaInput input){
+        return levitaService.update(input);
     }
 
     @PatchMapping("/add-instrumento/{id}")

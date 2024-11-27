@@ -19,6 +19,7 @@ public class LevitaEntity {
     private String nome;
     private String contato;
     private String email;
+    private String descricao;
 
     @ManyToMany
     @JoinTable(

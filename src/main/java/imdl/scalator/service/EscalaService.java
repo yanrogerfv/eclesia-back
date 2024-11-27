@@ -66,8 +66,6 @@ public class EscalaService {
             escala.setData(input.getData());
         if(input.getTitulo() != null && !input.getTitulo().isBlank())
             escala.setTitulo(input.getTitulo());
-        else
-            throw new RogueException("Título não pode estar vazio.");
         if(input.getMinistro() != null)
             escala.setMinistro(findLevita(input.getMinistro(), input.getData()));
         if(input.getBaixo() != null)
@@ -125,6 +123,7 @@ public class EscalaService {
         if(input.getMinistro() == null)
             throw new RogueException("Favor inserir um ministro para a escala.");
     }
+
     private Escala inputToDomain(EscalaInput input){
         Escala escala = new Escala();
         escala.setData(input.getData());

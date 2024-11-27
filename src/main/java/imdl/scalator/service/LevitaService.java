@@ -6,6 +6,7 @@ import imdl.scalator.domain.Instrumento;
 import imdl.scalator.domain.Levita;
 import imdl.scalator.domain.exception.RogueException;
 import imdl.scalator.domain.input.LevitaInput;
+import imdl.scalator.persistence.EscalaRepository;
 import imdl.scalator.persistence.LevitaRepository;
 import imdl.scalator.service.mapper.LevitaMapper;
 
@@ -18,9 +19,12 @@ public class LevitaService {
 
     private final InstrumentoService instrumentoService;
 
-    public LevitaService(LevitaRepository levitaRepository, InstrumentoService instrumentoService) {
+    private final EscalaRepository escalaService;
+
+    public LevitaService(LevitaRepository levitaRepository, InstrumentoService instrumentoService, EscalaRepository escalaService) {
         this.levitaRepository = levitaRepository;
         this.instrumentoService = instrumentoService;
+        this.escalaService = escalaService;
     }
 
     public List<Levita> findAll(LevitaFilter filter){
@@ -74,6 +78,8 @@ public class LevitaService {
     }
 
     public void deleteLevita(UUID id){
+        if(escalaService.existsByLevita(id))
+            throw new RogueException("Levita está em uma escala.");
         levitaRepository.delete(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
     }
@@ -143,7 +149,7 @@ public class LevitaService {
     private void validateInput(LevitaInput input){
         if(input.getNome() == null || input.getNome().isBlank())
             throw new RogueException("O nome está vazio.");
-        if(input.getInstrumentos() == null)
+        if(input.getInstrumentos() == null || input.getInstrumentos().isEmpty())
             throw new RogueException("O instrumento está vazio.");
         if((input.getContato() == null||input.getContato().isBlank())
                 && (input.getEmail() == null ||input.getEmail().isBlank()))

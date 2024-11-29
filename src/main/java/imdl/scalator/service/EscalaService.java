@@ -114,6 +114,8 @@ public class EscalaService {
     }
 
     private void validateInput(EscalaInput input){
+        if(input.getTitulo() == null || input.getTitulo().isBlank())
+            throw new RogueException("A escala está sem título.");
         if(input.getData() == null)
             throw new RogueException("A escala está sem data.");
         if(input.getData().isBefore(LocalDate.now()))

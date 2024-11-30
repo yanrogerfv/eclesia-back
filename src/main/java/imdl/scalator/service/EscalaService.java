@@ -1,6 +1,6 @@
 package imdl.scalator.service;
 
-import imdl.scalator.domain.EscalaResumida;
+import imdl.scalator.domain.EscalaResumed;
 import imdl.scalator.domain.exception.EntityNotFoundException;
 import imdl.scalator.domain.Escala;
 import imdl.scalator.domain.Levita;
@@ -40,11 +40,11 @@ public class EscalaService {
         return escalaRepository.findNext(LocalDate.now(), LocalDate.now().plusDays(31)).stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
     }
 
-    public List<EscalaResumida> findNextEscalasResumidas() {
-        return escalaRepository.findNextResumidas(LocalDate.now(), LocalDate.now().plusDays(31)).stream().map(EscalaMapper::entityToDomainResumida).sorted(Comparator.comparing(EscalaResumida::getData)).toList();
+    public List<EscalaResumed> findNextEscalasResumidas() {
+        return escalaRepository.findNextResumidas(LocalDate.now(), LocalDate.now().plusDays(31)).stream().map(EscalaMapper::entityToDomainResumida).sorted(Comparator.comparing(EscalaResumed::getData)).toList();
     }
 
-    public List<EscalaResumida> findAllResumidas(){
+    public List<EscalaResumed> findAllResumidas(){
         return escalaRepository.findAllResumida().stream().map(EscalaMapper::entityToDomainResumida).toList();
     }
 

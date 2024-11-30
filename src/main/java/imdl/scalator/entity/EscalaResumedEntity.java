@@ -4,14 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "escala")
-public class EscalaResumidaEntity {
+public class EscalaResumedEntity {
     @Id
     @Column(name = "escala_id", columnDefinition = "uuid")
     @GeneratedValue(strategy = GenerationType.UUID)

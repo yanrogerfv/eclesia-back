@@ -3,7 +3,7 @@ package imdl.scalator.domain;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class EscalaResumida {
+public class EscalaResumed {
     private UUID id;
     private LocalDate data;
     private String titulo;

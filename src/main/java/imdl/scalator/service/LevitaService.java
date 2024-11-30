@@ -1,6 +1,7 @@
 package imdl.scalator.service;
 
 import imdl.scalator.controller.filter.LevitaFilter;
+import imdl.scalator.domain.LevitaResumed;
 import imdl.scalator.domain.exception.EntityNotFoundException;
 import imdl.scalator.domain.Instrumento;
 import imdl.scalator.domain.Levita;
@@ -31,6 +32,10 @@ public class LevitaService {
         return levitaRepository.findAll(filter.nome(), filter.instrumento()).stream()
                 .map(LevitaMapper::entityToDomain).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
+    public List<LevitaResumed> findAllResumed(){
+        return levitaRepository.findAllResumed().stream().map(LevitaMapper::entityToDomainResumed).toList();
+    }
+
     public List<Levita> findAllById(List<UUID> ids){
         return levitaRepository.findAllById(ids).stream().map(LevitaMapper::entityToDomain).toList();
     }

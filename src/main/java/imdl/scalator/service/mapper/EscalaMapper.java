@@ -1,9 +1,9 @@
 package imdl.scalator.service.mapper;
 
 import imdl.scalator.domain.Escala;
-import imdl.scalator.domain.EscalaResumida;
+import imdl.scalator.domain.EscalaResumed;
 import imdl.scalator.entity.EscalaEntity;
-import imdl.scalator.entity.EscalaResumidaEntity;
+import imdl.scalator.entity.EscalaResumedEntity;
 
 public class EscalaMapper {
 
@@ -35,8 +35,8 @@ public class EscalaMapper {
         return domain;
     }
 
-    public static EscalaResumida entityToDomainResumida(EscalaResumidaEntity entity){
-        EscalaResumida domain = new EscalaResumida();
+    public static EscalaResumed entityToDomainResumida(EscalaResumedEntity entity){
+        EscalaResumed domain = new EscalaResumed();
         domain.setId(entity.getId());
         domain.setData(entity.getData());
         domain.setTitulo(entity.getTitulo());

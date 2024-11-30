@@ -4,13 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-public class Levita {
+public class LevitaResumed {
     private UUID id;
     private String nome;
     private String email;
     private String contato;
     private String descricao;
-    private List<Escala> escalas;
     private List<LocalDate> agenda;
     private List<Instrumento> instrumentos;
 
@@ -52,14 +51,6 @@ public class Levita {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-
-    public List<Escala> getEscalas() {
-        return escalas;
-    }
-
-    public void setEscalas(List<Escala> escalas) {
-        this.escalas = escalas;
     }
 
     public List<LocalDate> getAgenda() {

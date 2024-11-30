@@ -2,6 +2,7 @@ package imdl.scalator.controller;
 
 import imdl.scalator.controller.filter.LevitaFilter;
 import imdl.scalator.domain.Levita;
+import imdl.scalator.domain.LevitaResumed;
 import imdl.scalator.domain.input.LevitaInput;
 import imdl.scalator.service.LevitaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,12 @@ public class  LevitaController {
     @Operation(summary = "Lista todos os levitas.")
     public List<Levita> listLevitas(LevitaFilter filter){
         return levitaService.findAll(filter);
+    }
+
+    @GetMapping("/resumed")
+    @Operation(summary = "Lista todos os levitas.")
+    public List<LevitaResumed> listResumedLevitas(){
+        return levitaService.findAllResumed();
     }
 
     @GetMapping("/{id}")

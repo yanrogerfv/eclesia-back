@@ -33,7 +33,8 @@ public class LevitaService {
                 .map(LevitaMapper::entityToDomain).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
     public List<LevitaResumed> findAllResumed(){
-        return levitaRepository.findAllResumed().stream().map(LevitaMapper::entityToDomainResumed).toList();
+        return levitaRepository.findAllResumed().stream().map(LevitaMapper::entityToDomainResumed)
+                .sorted(Comparator.comparing(LevitaResumed::getNome)).toList();
     }
 
     public List<Levita> findAllById(List<UUID> ids){

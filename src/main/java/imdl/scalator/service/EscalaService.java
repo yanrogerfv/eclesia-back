@@ -45,7 +45,7 @@ public class EscalaService {
     }
 
     public List<EscalaResumed> findAllResumidas(){
-        return escalaRepository.findAllResumida().stream().map(EscalaMapper::entityToDomainResumida).toList();
+        return escalaRepository.findAllResumida().stream().map(EscalaMapper::entityToDomainResumida).sorted(Comparator.comparing(EscalaResumed::getData)).toList();
     }
 
     public Escala findById(UUID id){

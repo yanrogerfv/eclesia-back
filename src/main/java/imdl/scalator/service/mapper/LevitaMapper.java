@@ -17,8 +17,8 @@ public class LevitaMapper {
         entity.setEmail(domain.getEmail());
         entity.setContato(domain.getContato());
         entity.setDescricao(domain.getDescricao());
-        entity.setInstrumentos(domain.getInstrumentos().stream().map(InstrumentoMapper::domainToEntity).toList());
         entity.setAgenda(domain.getAgenda());
+        entity.setInstrumentos(domain.getInstrumentos().stream().map(InstrumentoMapper::domainToEntity).toList());
         return entity;
     }
 

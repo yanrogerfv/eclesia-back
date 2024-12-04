@@ -80,8 +80,8 @@ public class EscalaController {
 
     @PostMapping("/musicas/{escalaId}")
     @Operation(summary = "Adiciona uma música na escala.")
-    public Escala addMusicaInEscala(@PathVariable UUID escalaId, @RequestParam UUID musicaId){
-        return escalaService.addMusicaInEscala(escalaId, musicaId);
+    public Escala addMusicaInEscala(@PathVariable UUID escalaId, @RequestBody List<UUID> musicasIds){
+        return escalaService.setMusicasInEscala(escalaId, musicasIds);
     }
 
     @DeleteMapping("/musicas/{escalaId}")

@@ -12,6 +12,7 @@ import imdl.scalator.service.mapper.EscalaMapper;
 import imdl.scalator.service.mapper.MusicaMapper;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -97,10 +98,12 @@ public class EscalaService {
         return escalaRepository.findAllMusicasInEscala(escalaId).stream().map(MusicaMapper::entityToDomain).toList();
     }
 
-    public Escala addMusicaInEscala(UUID escalaId, UUID musicaId){
+    public Escala setMusicasInEscala(UUID escalaId, List<UUID> musicasIds){
         Escala escala = findById(escalaId);
-        List<Musica> musicas = escala.getMusicas();
-        musicas.add(musicaService.findById(musicaId));
+        List<Musica> musicas = new ArrayList<>();
+        if(musicasIds == null || musicasIds.isEmpty())
+            throw new RogueException("Nenhuma música foi selecionada.");
+        musicasIds.forEach(id -> musicas.add(musicaService.findById(id)));
         escala.setMusicas(musicas);
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }

@@ -79,14 +79,20 @@ public class  LevitaController {
         return levitaService.findAllDisponivel(date);
     }
 
+    @GetMapping("/agenda/{id}")
+    @Operation(summary = "Retorna a agenda de um Levita.")
+    public List<LocalDate> getLevitaAgenda(@PathVariable UUID id){
+        return levitaService.getLevitaAgenda(id);
+    }
+
     @PatchMapping("/agenda/{id}")
     @Operation(summary = "Adiciona uma data à agenda de um Levita.")
     public Levita addDataInAgenda(@PathVariable UUID id, @RequestParam LocalDate date){
         return levitaService.addDataInAgenda(id, date);
     }
 
-    @PutMapping("/agenta/{id}")
-    @Operation(summary = "Muda a disponibilidade de um levita pelo seu ID.")
+    @PutMapping("/agenda/{id}")
+    @Operation(summary = "Atualiza a agenda de um Levita.")
     public Levita changeDisponivel(@PathVariable UUID id){
         return levitaService.updateAgentaFromALevita(id);
     }

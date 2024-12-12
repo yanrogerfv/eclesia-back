@@ -4,6 +4,7 @@ import imdl.scalator.domain.Escala;
 import imdl.scalator.domain.EscalaResumed;
 import imdl.scalator.domain.Musica;
 import imdl.scalator.domain.input.EscalaInput;
+import imdl.scalator.domain.input.MusicasIdsInput;
 import imdl.scalator.service.EscalaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,10 +60,10 @@ public class EscalaController {
         return escalaService.create(input);
     }
 
-    @PutMapping("/{escalaId}")
+    @PutMapping
     @Operation(summary = "Atualiza uma escala.")
-    public Escala updateEscala(@PathVariable UUID escalaId, @RequestBody EscalaInput input){
-        return escalaService.update(escalaId, input);
+    public Escala updateEscala(@RequestBody EscalaInput input){
+        return escalaService.update(input);
     }
 
     @DeleteMapping("/{escalaId}")
@@ -80,8 +81,8 @@ public class EscalaController {
 
     @PostMapping("/musicas/{escalaId}")
     @Operation(summary = "Adiciona uma música na escala.")
-    public Escala addMusicaInEscala(@PathVariable UUID escalaId, @RequestBody List<UUID> musicasIds){
-        return escalaService.setMusicasInEscala(escalaId, musicasIds);
+    public Escala addMusicaInEscala(@PathVariable UUID escalaId, @RequestBody MusicasIdsInput musicasIds){
+        return escalaService.setMusicasInEscala(escalaId, musicasIds.getMusicasIds());
     }
 
     @DeleteMapping("/musicas/{escalaId}")

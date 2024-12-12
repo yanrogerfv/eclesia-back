@@ -124,6 +124,10 @@ public class LevitaService {
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
 
+    public List<LocalDate> getLevitaAgenda(UUID id){
+        return levitaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Levita não encontrado.")).getAgenda();
+    }
+
     public Levita updateAgentaFromALevita(UUID id){
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));

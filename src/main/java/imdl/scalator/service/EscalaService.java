@@ -60,29 +60,9 @@ public class EscalaService {
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
 
-    public Escala update(UUID id, EscalaInput input){
+    public Escala update(EscalaInput input){
         validateInput(input);
-        Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
-        if(input.getData() != null)
-            escala.setData(input.getData());
-        if(input.getTitulo() != null && !input.getTitulo().isBlank())
-            escala.setTitulo(input.getTitulo());
-        if(input.getMinistro() != null)
-            escala.setMinistro(findLevita(input.getMinistro(), input.getData()));
-        if(input.getBaixo() != null)
-            escala.setBaixo(findLevita(input.getBaixo(), input.getData()));
-        if(input.getBateria() != null)
-            escala.setBateria(findLevita(input.getBateria(), input.getData()));
-        if(input.getGuitarra() != null)
-            escala.setGuitarra(findLevita(input.getGuitarra(), input.getData()));
-        if(input.getTeclado() != null)
-            escala.setTeclado(findLevita(input.getTeclado(), input.getData()));
-        if(input.getViolao() != null)
-            escala.setViolao(findLevita(input.getViolao(), input.getData()));
-        if(input.getBacks() != null)
-            escala.setBack(levitaService.findAllById(input.getBacks()));
-        if (input.getObservacoes() != null)
-            escala.setObservacoes(input.getObservacoes());
+        Escala escala = inputToDomain(input);
         escalaRepository.save(EscalaMapper.domainToEntity(escala));
         return escala;
     }
@@ -131,19 +111,32 @@ public class EscalaService {
 
     private Escala inputToDomain(EscalaInput input){
         Escala escala = new Escala();
+        if(input.getId() != null)
+            escala = EscalaMapper.entityToDomain(escalaRepository.findById(input.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
         escala.setData(input.getData());
         escala.setTitulo(input.getTitulo());
         escala.setMinistro(findLevita(input.getMinistro(), input.getData()));
         if(input.getBaixo() != null)
             escala.setBaixo(findLevita(input.getBaixo(), input.getData()));
+        else
+            escala.setBaixo(null);
         if(input.getBateria() != null)
             escala.setBateria(findLevita(input.getBateria(), input.getData()));
+        else
+            escala.setBateria(null);
         if(input.getGuitarra() != null)
             escala.setGuitarra(findLevita(input.getGuitarra(), input.getData()));
+        else
+            escala.setGuitarra(null);
         if(input.getTeclado() != null)
             escala.setTeclado(findLevita(input.getTeclado(), input.getData()));
+        else
+            escala.setTeclado(null);
         if(input.getViolao() != null)
             escala.setViolao(findLevita(input.getViolao(), input.getData()));
+        else
+            escala.setViolao(null);
         if(input.getBacks() != null) {
             escala.setBack(levitaService.findAllById(input.getBacks()));
             escala.getBack().forEach(levita -> {

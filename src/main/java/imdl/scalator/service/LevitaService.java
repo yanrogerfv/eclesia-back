@@ -1,11 +1,13 @@
 package imdl.scalator.service;
 
 import imdl.scalator.controller.filter.LevitaFilter;
+import imdl.scalator.domain.LevitaResumed;
 import imdl.scalator.domain.exception.EntityNotFoundException;
 import imdl.scalator.domain.Instrumento;
 import imdl.scalator.domain.Levita;
 import imdl.scalator.domain.exception.RogueException;
 import imdl.scalator.domain.input.LevitaInput;
+import imdl.scalator.persistence.EscalaRepository;
 import imdl.scalator.persistence.LevitaRepository;
 import imdl.scalator.service.mapper.LevitaMapper;
 
@@ -18,22 +20,34 @@ public class LevitaService {
 
     private final InstrumentoService instrumentoService;
 
-    public LevitaService(LevitaRepository levitaRepository, InstrumentoService instrumentoService) {
+    private final EscalaRepository escalaService;
+
+    public LevitaService(LevitaRepository levitaRepository, InstrumentoService instrumentoService, EscalaRepository escalaService) {
         this.levitaRepository = levitaRepository;
         this.instrumentoService = instrumentoService;
+        this.escalaService = escalaService;
     }
 
     public List<Levita> findAll(LevitaFilter filter){
         return levitaRepository.findAll(filter.nome(), filter.instrumento()).stream()
                 .map(LevitaMapper::entityToDomain).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
+    public List<LevitaResumed> findAllResumed(){
+        return levitaRepository.findAllResumed().stream().map(LevitaMapper::entityToDomainResumed)
+                .sorted(Comparator.comparing(LevitaResumed::getNome)).toList();
+    }
+
     public List<Levita> findAllById(List<UUID> ids){
         return levitaRepository.findAllById(ids).stream().map(LevitaMapper::entityToDomain).toList();
     }
 
     public List<Levita> findAllDisponivel(LocalDate date){
         return levitaRepository.findAll().stream().map(LevitaMapper::entityToDomain)
-                .filter(levita -> !levita.getAgenda().contains(date)).toList();
+                .filter(levita -> {
+                    if(levita.getAgenda() == null)
+                        return true;
+                    return !levita.getAgenda().contains(date);
+                }).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
     public List<Levita> findAllByInstrument(Long instrumento){
         return levitaRepository.findAllByInstrumento(instrumento).stream()
@@ -50,26 +64,27 @@ public class LevitaService {
         levita.setAgenda(new ArrayList<>());
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
-    public Levita update(UUID id, LevitaInput input){
-        Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
+    public Levita update(LevitaInput input){
+        Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(input.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
-        if(input.getNome() != null) {
+        if(input.getNome() != null)
             if (input.getNome().isBlank())
                 throw new RogueException("O nome está vazio.");
-            else
-                levita.setNome(input.getNome());
-        }
+            else levita.setNome(input.getNome());
         if(input.getInstrumentos() != null)
             levita.setInstrumentos(input.getInstrumentos().stream().map(instrumentoService::findById).toList());
         if(input.getContato() != null)
             levita.setContato(input.getContato());
         if(input.getEmail() != null)
             levita.setEmail(input.getEmail());
-        levitaRepository.save(LevitaMapper.domainToEntity(levita));
-        return levita;
+        if(input.getDescricao() != null)
+            levita.setDescricao(input.getDescricao());
+        return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
 
     public void deleteLevita(UUID id){
+        if(escalaService.existsByLevita(id))
+            throw new RogueException("Levita está em uma escala.");
         levitaRepository.delete(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
     }
@@ -109,6 +124,10 @@ public class LevitaService {
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
 
+    public List<LocalDate> getLevitaAgenda(UUID id){
+        return levitaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Levita não encontrado.")).getAgenda();
+    }
+
     public Levita updateAgentaFromALevita(UUID id){
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
@@ -139,7 +158,7 @@ public class LevitaService {
     private void validateInput(LevitaInput input){
         if(input.getNome() == null || input.getNome().isBlank())
             throw new RogueException("O nome está vazio.");
-        if(input.getInstrumentos() == null)
+        if(input.getInstrumentos() == null || input.getInstrumentos().isEmpty())
             throw new RogueException("O instrumento está vazio.");
         if((input.getContato() == null||input.getContato().isBlank())
                 && (input.getEmail() == null ||input.getEmail().isBlank()))
@@ -148,10 +167,13 @@ public class LevitaService {
 
     private Levita inputToDomain(LevitaInput input){
         Levita levita = new Levita();
+        if (input.getId() != null)
+            levita.setId(input.getId());
         levita.setNome(input.getNome());
         levita.setInstrumentos(input.getInstrumentos().stream().map(instrumentoService::findById).toList());
         levita.setContato(input.getContato());
         levita.setEmail(input.getEmail());
+        levita.setDescricao(input.getDescricao());
         return levita;
     }
 }

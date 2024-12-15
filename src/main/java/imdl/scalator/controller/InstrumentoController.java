@@ -31,12 +31,12 @@ public class InstrumentoController {
     }
 
     @PostMapping
-    public Instrumento createInstrumento(InstrumentoInput input){
+    public Instrumento createInstrumento(@RequestBody InstrumentoInput input){
         return instrumentoService.createInstrumento(input);
     }
 
-    @DeleteMapping
-    public void deleteInstrumento(Long id){
+    @DeleteMapping("/{id}")
+    public void deleteInstrumento(@PathVariable Long id){
         instrumentoService.deleteInstrumento(id);
     }
 

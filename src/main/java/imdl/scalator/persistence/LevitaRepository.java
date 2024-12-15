@@ -1,6 +1,7 @@
 package imdl.scalator.persistence;
 
 import imdl.scalator.entity.LevitaEntity;
+import imdl.scalator.entity.LevitaResumedEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +19,7 @@ public interface LevitaRepository extends JpaRepository<LevitaEntity, UUID> {
             "AND (:nome IS NULL OR l.nome = :nome) ")
     List<LevitaEntity> findAll(@Param("nome") String nome,
                                @Param("instrumento") Long instrumento);
+
+    @Query("SELECT l from LevitaResumedEntity l")
+    List<LevitaResumedEntity> findAllResumed();
 }

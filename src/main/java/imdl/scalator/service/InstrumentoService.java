@@ -31,6 +31,7 @@ public class InstrumentoService {
             throw new RogueException("Já existe um instrumento com este nome.");
         Instrumento instrumento = new Instrumento();
         instrumento.setNome(input.getNome().toUpperCase());
+        instrumento.setId(instrumentoRepository.findNextSequential());
         return InstrumentoMapper.entityToDomain(instrumentoRepository.save(InstrumentoMapper.domainToEntity(instrumento)));
     }
 

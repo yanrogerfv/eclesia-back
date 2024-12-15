@@ -29,7 +29,7 @@ public class LevitaService {
     }
 
     public List<Levita> findAll(LevitaFilter filter){
-        return levitaRepository.findAll(filter.nome(), filter.instrumento()).stream()
+        return levitaRepository.findAll(filter.getNome(), filter.getInstrumento()).stream()
                 .map(LevitaMapper::entityToDomain).sorted(Comparator.comparing(Levita::getNome)).toList();
     }
     public List<LevitaResumed> findAllResumed(){

@@ -1,5 +1,6 @@
 package imdl.scalator.service;
 
+import imdl.scalator.domain.EscalaResumed;
 import imdl.scalator.domain.exception.EntityNotFoundException;
 import imdl.scalator.domain.Escala;
 import imdl.scalator.domain.Levita;
@@ -11,6 +12,7 @@ import imdl.scalator.service.mapper.EscalaMapper;
 import imdl.scalator.service.mapper.MusicaMapper;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +41,14 @@ public class EscalaService {
         return escalaRepository.findNext(LocalDate.now(), LocalDate.now().plusDays(31)).stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
     }
 
+    public List<EscalaResumed> findNextEscalasResumidas() {
+        return escalaRepository.findNextResumidas(LocalDate.now(), LocalDate.now().plusDays(31)).stream().map(EscalaMapper::entityToDomainResumida).sorted(Comparator.comparing(EscalaResumed::getData)).toList();
+    }
+
+    public List<EscalaResumed> findAllResumidas(){
+        return escalaRepository.findAllResumida().stream().map(EscalaMapper::entityToDomainResumida).sorted(Comparator.comparing(EscalaResumed::getData)).toList();
+    }
+
     public Escala findById(UUID id){
         return escalaRepository.findById(id).map(EscalaMapper::entityToDomain)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."));
@@ -50,31 +60,9 @@ public class EscalaService {
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
 
-    public Escala update(UUID id, EscalaInput input){
+    public Escala update(EscalaInput input){
         validateInput(input);
-        Escala escala = EscalaMapper.entityToDomain(escalaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
-        if(input.getData() != null)
-            escala.setData(input.getData());
-        if(input.getTitulo() != null && !input.getTitulo().isBlank())
-            escala.setTitulo(input.getTitulo());
-        else
-            throw new RogueException("Título não pode estar vazio.");
-        if(input.getMinistro() != null)
-            escala.setMinistro(findLevita(input.getMinistro(), input.getData()));
-        if(input.getBaixo() != null)
-            escala.setBaixo(findLevita(input.getBaixo(), input.getData()));
-        if(input.getBateria() != null)
-            escala.setBateria(findLevita(input.getBateria(), input.getData()));
-        if(input.getGuitarra() != null)
-            escala.setGuitarra(findLevita(input.getGuitarra(), input.getData()));
-        if(input.getTeclado() != null)
-            escala.setTeclado(findLevita(input.getTeclado(), input.getData()));
-        if(input.getViolao() != null)
-            escala.setViolao(findLevita(input.getViolao(), input.getData()));
-        if(input.getBacks() != null)
-            escala.setBack(levitaService.findAllById(input.getBacks()));
-        if (input.getObservacoes() != null)
-            escala.setObservacoes(input.getObservacoes());
+        Escala escala = inputToDomain(input);
         escalaRepository.save(EscalaMapper.domainToEntity(escala));
         return escala;
     }
@@ -90,10 +78,12 @@ public class EscalaService {
         return escalaRepository.findAllMusicasInEscala(escalaId).stream().map(MusicaMapper::entityToDomain).toList();
     }
 
-    public Escala addMusicaInEscala(UUID escalaId, UUID musicaId){
+    public Escala setMusicasInEscala(UUID escalaId, List<UUID> musicasIds){
         Escala escala = findById(escalaId);
-        List<Musica> musicas = escala.getMusicas();
-        musicas.add(musicaService.findById(musicaId));
+        List<Musica> musicas = new ArrayList<>();
+        if(musicasIds == null || musicasIds.isEmpty())
+            throw new RogueException("Nenhuma música foi selecionada.");
+        musicasIds.forEach(id -> musicas.add(musicaService.findById(id)));
         escala.setMusicas(musicas);
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
@@ -107,6 +97,8 @@ public class EscalaService {
     }
 
     private void validateInput(EscalaInput input){
+        if(input.getTitulo() == null || input.getTitulo().isBlank())
+            throw new RogueException("A escala está sem título.");
         if(input.getData() == null)
             throw new RogueException("A escala está sem data.");
         if(input.getData().isBefore(LocalDate.now()))
@@ -116,21 +108,35 @@ public class EscalaService {
         if(input.getMinistro() == null)
             throw new RogueException("Favor inserir um ministro para a escala.");
     }
+
     private Escala inputToDomain(EscalaInput input){
         Escala escala = new Escala();
+        if(input.getId() != null)
+            escala = EscalaMapper.entityToDomain(escalaRepository.findById(input.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
         escala.setData(input.getData());
         escala.setTitulo(input.getTitulo());
         escala.setMinistro(findLevita(input.getMinistro(), input.getData()));
         if(input.getBaixo() != null)
             escala.setBaixo(findLevita(input.getBaixo(), input.getData()));
+        else
+            escala.setBaixo(null);
         if(input.getBateria() != null)
             escala.setBateria(findLevita(input.getBateria(), input.getData()));
+        else
+            escala.setBateria(null);
         if(input.getGuitarra() != null)
             escala.setGuitarra(findLevita(input.getGuitarra(), input.getData()));
+        else
+            escala.setGuitarra(null);
         if(input.getTeclado() != null)
             escala.setTeclado(findLevita(input.getTeclado(), input.getData()));
+        else
+            escala.setTeclado(null);
         if(input.getViolao() != null)
             escala.setViolao(findLevita(input.getViolao(), input.getData()));
+        else
+            escala.setViolao(null);
         if(input.getBacks() != null) {
             escala.setBack(levitaService.findAllById(input.getBacks()));
             escala.getBack().forEach(levita -> {

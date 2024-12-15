@@ -14,11 +14,17 @@ public class Escala {
     private boolean domingo;
     private boolean especial;
     private Levita ministro;
+    private String ministroNome;
     private Levita baixo;
+    private String baixoNome;
     private Levita bateria;
+    private String bateriaNome;
     private Levita guitarra;
+    private String guitarraNome;
     private Levita teclado;
+    private String tecladoNome;
     private Levita violao;
+    private String violaoNome;
     private List<Levita> back;
     private List<Musica> musicas;
     private String observacoes;
@@ -141,5 +147,53 @@ public class Escala {
 
     public void setObservacoes(String observacoes) {
         this.observacoes = observacoes;
+    }
+
+    public String getMinistroNome() {
+        return ministroNome;
+    }
+
+    public void setMinistroNome(String ministroNome) {
+        this.ministroNome = ministroNome;
+    }
+
+    public String getBaixoNome() {
+        return baixoNome;
+    }
+
+    public void setBaixoNome(String baixoNome) {
+        this.baixoNome = baixoNome;
+    }
+
+    public String getBateriaNome() {
+        return bateriaNome;
+    }
+
+    public void setBateriaNome(String bateriaNome) {
+        this.bateriaNome = bateriaNome;
+    }
+
+    public String getGuitarraNome() {
+        return guitarraNome;
+    }
+
+    public void setGuitarraNome(String guitarraNome) {
+        this.guitarraNome = guitarraNome;
+    }
+
+    public String getTecladoNome() {
+        return tecladoNome;
+    }
+
+    public void setTecladoNome(String tecladoNome) {
+        this.tecladoNome = tecladoNome;
+    }
+
+    public String getViolaoNome() {
+        return violaoNome;
+    }
+
+    public void setViolaoNome(String violaoNome) {
+        this.violaoNome = violaoNome;
     }
 }

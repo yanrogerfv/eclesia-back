@@ -9,7 +9,6 @@ import lombok.Data;
 public class InstrumentoEntity {
     @Id
     @Column(name = "numero")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
 }

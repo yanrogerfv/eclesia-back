@@ -30,21 +30,27 @@ public class EscalaEntity {
     @ManyToOne
     @JoinColumn(name = "ministro_id", referencedColumnName = "levita_id")
     private LevitaEntity ministro;
+    private String ministroNome;
     @ManyToOne
     @JoinColumn(name = "baixo_id", referencedColumnName = "levita_id")
     private LevitaEntity baixo;
+    private String baixoNome;
     @ManyToOne
     @JoinColumn(name = "bateria_id", referencedColumnName = "levita_id")
     private LevitaEntity bateria;
+    private String bateriaNome;
     @ManyToOne
     @JoinColumn(name = "guitarra_id", referencedColumnName = "levita_id")
     private LevitaEntity guitarra;
+    private String guitarraNome;
     @ManyToOne
     @JoinColumn(name = "teclado_id", referencedColumnName = "levita_id")
     private LevitaEntity teclado;
+    private String tecladoNome;
     @ManyToOne
     @JoinColumn(name = "violao_id", referencedColumnName = "levita_id")
     private LevitaEntity violao;
+    private String violaoNome;
     @ManyToMany
     @JoinTable(
             name = "backs_in_escala",

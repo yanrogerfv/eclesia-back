@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "levita")
-public class LevitaEntity {
+public class LevitaResumedEntity {
     @Id
     @Column(name = "levita_id", columnDefinition = "uuid")
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -20,20 +20,11 @@ public class LevitaEntity {
     private String contato;
     private String email;
     private String descricao;
-
     @ManyToMany
     @JoinTable(
             name = "levita_instrumentos",
             joinColumns = @JoinColumn(name = "levita_id", referencedColumnName = "levita_id"),
             inverseJoinColumns = @JoinColumn(name = "instrumento", referencedColumnName = "numero")
-    )
-    private List<InstrumentoEntity> instrumentos;
-    @OneToMany
-    @JoinTable(
-            name = "levita_escalas",
-            joinColumns = @JoinColumn(name = "levita_id", referencedColumnName = "levita_id"),
-            inverseJoinColumns = @JoinColumn(name = "escala_id", referencedColumnName = "escala_id")
-    )
-    private List<EscalaEntity> escalas = new ArrayList<>();
+    ) private List<InstrumentoEntity> instrumentos;
     private List<LocalDate> agenda;
 }

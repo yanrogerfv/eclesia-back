@@ -3,12 +3,14 @@ package imdl.scalator.domain.input;
 import lombok.Data;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class LevitaInput {
+    private UUID id;
     private String nome;
-    private List<Long> instrumentos;
-    private String contato;
     private String email;
-    private boolean disponivel;
+    private String contato;
+    private String descricao;
+    private List<Long> instrumentos;
 }

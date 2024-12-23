@@ -30,26 +30,32 @@ public class EscalaService {
     }
 
     public List<Escala> findAllEscalas(){
+        cleanEscalas();
         return escalaRepository.findAll().stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
     }
 
     public List<Escala> findMonthEscalas(int month){
+        cleanEscalas();
         return escalaRepository.findAllInMonth(month).stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
     }
 
     public List<Escala> findNextEscalas() {
+        cleanEscalas();
         return escalaRepository.findNext(LocalDate.now(), LocalDate.now().plusDays(31)).stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
     }
 
     public List<EscalaResumed> findNextEscalasResumidas() {
+        cleanEscalas();
         return escalaRepository.findNextResumidas(LocalDate.now(), LocalDate.now().plusDays(31)).stream().map(EscalaMapper::entityToDomainResumida).sorted(Comparator.comparing(EscalaResumed::getData)).toList();
     }
 
     public List<EscalaResumed> findAllResumidas(){
+        cleanEscalas();
         return escalaRepository.findAllResumida().stream().map(EscalaMapper::entityToDomainResumida).sorted(Comparator.comparing(EscalaResumed::getData)).toList();
     }
 
     public Escala findById(UUID id){
+        cleanEscalas();
         return escalaRepository.findById(id).map(EscalaMapper::entityToDomain)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada."));
     }
@@ -165,6 +171,14 @@ public class EscalaService {
         if(levita.getAgenda().contains(data))
             throw new RogueException(levita.getNome()+" está indisponível para essa data.");
         return levita;
+    }
+
+    private void cleanEscalas(){
+        List<Escala> escalas = escalaRepository.findAll().stream().map(EscalaMapper::entityToDomain).toList();
+        for (int i = 0; i < escalas.size(); i++) {
+            if(escalas.get(i).getData().isBefore(LocalDate.now()))
+                escalaRepository.deleteById(escalas.get(i).getId());
+        }
     }
 
 }

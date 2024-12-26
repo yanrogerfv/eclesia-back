@@ -10,10 +10,10 @@ public class RoleDTO {
     private UUID id;
     private String role;
 
-    public RoleEntity toRole(){
+    public static RoleEntity toEntity(RoleDTO dto){
         RoleEntity role = new RoleEntity();
-        role.setId(this.getId());
-        role.setRole(this.getRole());
+        role.setId(dto.getId());
+        role.setRole(dto.getRole());
         return role;
     }
 

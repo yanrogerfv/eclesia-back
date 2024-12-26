@@ -1,6 +1,5 @@
 package imdl.scalator.auth.entity;
 
-import imdl.scalator.entity.LevitaEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +15,7 @@ public class UserEntity {
     private UUID id;
     private String username;
     private String passcode;
-    private UUID roleId;
+    @OneToOne
+    private RoleEntity role;
     private UUID levitaId;
 }

@@ -20,7 +20,7 @@ public class RoleService {
     }
 
     public RoleDTO create(RoleDTO dto){
-        return RoleDTO.toDTO(roleRepository.save(dto.toRole()));
+        return RoleDTO.toDTO(roleRepository.save(RoleDTO.toEntity(dto)));
     }
 
     public RoleDTO edit(RoleDTO dto){

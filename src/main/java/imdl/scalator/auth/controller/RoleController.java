@@ -2,6 +2,7 @@ package imdl.scalator.auth.controller;
 
 import imdl.scalator.auth.dto.RoleDTO;
 import imdl.scalator.auth.service.RoleService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping("/auth/role")
+@Tag(name = "Role", description = "Gerenciamento de cargos")
 public class RoleController {
 
     private final RoleService roleService;

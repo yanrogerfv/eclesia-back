@@ -6,6 +6,7 @@ import imdl.scalator.auth.repository.RoleRepository;
 import imdl.scalator.domain.exception.EntityNotFoundException;
 
 import java.util.List;
+import java.util.UUID;
 
 public class RoleService {
 
@@ -17,6 +18,11 @@ public class RoleService {
 
     public List<RoleDTO> list(){
         return roleRepository.findAll().stream().map(RoleDTO::toDTO).toList();
+    }
+
+    public RoleDTO findById(UUID id){
+        return roleRepository.findById(id).map(RoleDTO::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Role not found."));
     }
 
     public RoleDTO create(RoleDTO dto){

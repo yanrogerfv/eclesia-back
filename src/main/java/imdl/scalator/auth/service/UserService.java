@@ -1,8 +1,8 @@
 package imdl.scalator.auth.service;
 
 import imdl.scalator.auth.controller.input.UserInput;
+import imdl.scalator.auth.controller.output.UserOutput;
 import imdl.scalator.auth.dto.UserDTO;
-import imdl.scalator.auth.entity.UserEntity;
 import imdl.scalator.auth.repository.UserRepository;
 import imdl.scalator.domain.exception.EntityNotFoundException;
 import imdl.scalator.domain.exception.RogueException;
@@ -17,7 +17,7 @@ public class UserService {
     private final LevitaService levitaService;
     private final UserRepository userRepository;
     private final RoleService roleService;
-    private final BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder crypt = new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2Y, 12);
 
     public UserService(LevitaService levitaService, UserRepository userRepository, RoleService roleService) {
         this.levitaService = levitaService;
@@ -25,38 +25,45 @@ public class UserService {
         this.roleService = roleService;
     }
 
-    public List<UserDTO> list(){
-        return userRepository.findAll().stream().map(UserDTO::toDTO).toList();
+    public List<UserOutput> list(){
+        return userRepository.findAll().stream().map(UserDTO::toDTO).map(this::dtoToOutput).toList();
     }
 
-    public UserDTO create(UserInput input){
+    public UserOutput create(UserInput input){
         validate(input);
         UserDTO dto = inputToDTO(input);
-        return UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto)));
+        return dtoToOutput(UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto))));
     }
 
-    public UserDTO edit(UserInput input){
+    public UserOutput edit(UserInput input){
         UserDTO dto = userRepository.findById(input.getId()).map(UserDTO::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         dto.setUsername(input.getUsername());
         dto.setRole(roleService.findById(input.getRole()));
-        dto.setPasscode(crypt.encode(input.getPasscode()));
+        dto.setPassword(crypt.encode(input.getPasscode()));
         dto.setLevitaId(levitaService.findById(input.getLevitaId()).getId());
-        return UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto)));
+        return dtoToOutput(UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto))));
     }
 
     public void remove(UUID id){
         userRepository.delete(userRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("User not found.")));
     }
 
+    private UserOutput dtoToOutput(UserDTO dto){
+        UserOutput output = new UserOutput();
+        output.setId(dto.getId());
+        output.setUsername(dto.getUsername());
+        output.setRole(dto.getRole().getRole());
+        output.setLevita(levitaService.findById(dto.getLevitaId()));
+        return output;
+    }
+
     private UserDTO inputToDTO(UserInput input){
         UserDTO dto = new UserDTO();
-        if(input.getId() != null)
-            dto.setId(input.getId());
         dto.setUsername(input.getUsername());
         dto.setRole(roleService.findById(input.getRole()));
-        dto.setPasscode(crypt.encode(input.getPasscode()));
-//        dto.setLevitaId(levitaService.findById(input.getLevitaId()).getId());
+        dto.setPassword(crypt.encode(input.getPasscode()));
+        dto.setLevitaId(levitaService.findById(input.getLevitaId()).getId());
         return dto;
     }
 
@@ -65,6 +72,10 @@ public class UserService {
             throw new RogueException("Nome de usuário não deve estar vazio.");
         if(userRepository.existsByUsername(input.getUsername()))
             throw new RogueException("Já existe um cadastro com este nome de usuário.");
+        if(input.getRole() == null)
+            throw new RogueException("Cargo não selecionado.");
+        if(input.getLevitaId() == null)
+            throw new RogueException("Levita não selecionado.");
         if(userRepository.existsByLevitaId(input.getLevitaId()))
             throw new RogueException("Já existe um cadastro para este Levita.");
         validatePassword(input.getPasscode());

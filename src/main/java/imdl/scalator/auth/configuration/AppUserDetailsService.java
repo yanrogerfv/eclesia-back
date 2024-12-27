@@ -20,8 +20,7 @@ public class AppUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new UserDTO(UUID.randomUUID(), new RoleDTO(UUID.randomUUID(), "ADMIN"), "noita", "noita", null);
-//        return UserDTO.toDTO(userRepository.findByUsername(username)
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
+        return UserDTO.toDTO(userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
     }
 }

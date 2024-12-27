@@ -17,7 +17,7 @@ public class UserDTO implements UserDetails {
     private UUID id;
     private RoleDTO role;
     private String username;
-    private String passcode;
+    private String password;
     private UUID levitaId;
 
     public static UserEntity toEntity(UserDTO dto){
@@ -25,7 +25,7 @@ public class UserDTO implements UserDetails {
         user.setId(dto.getId());
         user.setRole(RoleDTO.toEntity(dto.getRole()));
         user.setUsername(dto.getUsername());
-        user.setPasscode(dto.getPasscode());
+        user.setPasscode(dto.getPassword());
         user.setLevitaId(dto.getLevitaId());
         return user;
     }
@@ -35,16 +35,16 @@ public class UserDTO implements UserDetails {
         dto.setId(user.getId());
         dto.setRole(RoleDTO.toDTO(user.getRole()));
         dto.setUsername(user.getUsername());
-        dto.setPasscode(user.getPasscode());
+        dto.setPassword(user.getPasscode());
         dto.setLevitaId(user.getLevitaId());
         return dto;
     }
 
-    public UserDTO(UUID id, RoleDTO role, String username, String passcode, UUID levitaId) {
+    public UserDTO(UUID id, RoleDTO role, String username, String password, UUID levitaId) {
         this.id = id;
         this.role = role;
         this.username = username;
-        this.passcode = passcode;
+        this.password = password;
         this.levitaId = levitaId;
     }
 
@@ -55,6 +55,6 @@ public class UserDTO implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.passcode;
+        return this.password;
     }
 }

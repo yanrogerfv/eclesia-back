@@ -35,7 +35,7 @@ public class RoleService {
         return RoleDTO.toDTO(roleRepository.save(entity));
     }
 
-    public void remove(RoleDTO dto){
-        roleRepository.delete(roleRepository.findById(dto.getId()).orElseThrow(()-> new EntityNotFoundException("Role not found.")));
+    public void remove(UUID id){
+        roleRepository.delete(roleRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Role not found.")));
     }
 }

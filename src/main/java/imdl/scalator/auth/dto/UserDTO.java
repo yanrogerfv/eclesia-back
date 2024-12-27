@@ -20,13 +20,13 @@ public class UserDTO implements UserDetails {
     private String passcode;
     private UUID levitaId;
 
-    public UserEntity toEntity(){
+    public static UserEntity toEntity(UserDTO dto){
         UserEntity user = new UserEntity();
-        user.setId(this.getId());
-        user.setRole(RoleDTO.toEntity(this.getRole()));
-        user.setUsername(this.getUsername());
-        user.setPasscode(this.getPasscode());
-        user.setLevitaId(this.getLevitaId());
+        user.setId(dto.getId());
+        user.setRole(RoleDTO.toEntity(dto.getRole()));
+        user.setUsername(dto.getUsername());
+        user.setPasscode(dto.getPasscode());
+        user.setLevitaId(dto.getLevitaId());
         return user;
     }
 

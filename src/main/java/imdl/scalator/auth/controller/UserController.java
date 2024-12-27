@@ -1,5 +1,6 @@
 package imdl.scalator.auth.controller;
 
+import imdl.scalator.auth.controller.input.UserInput;
 import imdl.scalator.auth.dto.UserDTO;
 import imdl.scalator.auth.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,14 +30,14 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Create a new user.")
-    public UserDTO create(@RequestBody UserDTO dto){
-        return userService.create(dto);
+    public UserDTO create(@RequestBody UserInput input){
+        return userService.create(input);
     }
 
     @PutMapping
     @Operation(summary = "Update an user.")
-    public UserDTO update(@RequestBody UserDTO dto){
-        return userService.edit(dto);
+    public UserDTO update(@RequestBody UserInput input){
+        return userService.edit(input);
     }
 
     @DeleteMapping("/{id}")

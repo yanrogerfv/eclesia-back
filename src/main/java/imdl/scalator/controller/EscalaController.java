@@ -30,6 +30,7 @@ public class EscalaController {
     public List<Escala> listFullEscalas(){
         return escalaService.findAllEscalas();
     }
+
     @GetMapping("/resumed")
     @Operation(summary = "Lista com todas as escalas.")
     public List<EscalaResumed> listResumedEscalas(){
@@ -70,6 +71,12 @@ public class EscalaController {
     @Operation(summary = "Deletar uma escala.")
     public void deleteEscala(@PathVariable UUID escalaId){
         escalaService.deleteEscala(escalaId);
+    }
+
+    @DeleteMapping("/clean")
+    @Operation(summary = "Deletar escalas antigas.")
+    public void cleanEscalas(){
+        escalaService.cleanEscalas();
     }
 
     //Músicas na Escala

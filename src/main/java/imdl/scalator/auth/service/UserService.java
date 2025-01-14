@@ -54,7 +54,8 @@ public class UserService {
         output.setId(dto.getId());
         output.setUsername(dto.getUsername());
         output.setRole(dto.getRole().getRole());
-        output.setLevita(levitaService.findById(dto.getLevitaId()));
+        if(dto.getLevitaId() != null)
+            output.setLevita(levitaService.findById(dto.getLevitaId()));
         return output;
     }
 

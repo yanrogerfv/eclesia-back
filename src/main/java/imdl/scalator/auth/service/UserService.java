@@ -89,4 +89,7 @@ public class UserService {
             throw new RogueException("A senha deve possuir 8 caracteres ou mais.");
     }
 
+    public UserDTO findByUsername(String username) {
+        return UserDTO.toDTO(userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found.")));
+    }
 }

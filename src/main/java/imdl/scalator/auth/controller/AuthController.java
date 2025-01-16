@@ -57,6 +57,12 @@ public class AuthController {
         return roleService.list();
     }
 
+    @GetMapping("/role/{username}")
+    @Operation(summary = "List of all roles of a user.")
+    public RoleDTO listRolesOfUser(@PathVariable String username){
+        return userService.findByUsername(username).getRole();
+    }
+
     @PostMapping("/role")
     @Operation(summary = "Create a new role.")
     public RoleDTO createRole(@RequestBody RoleDTO dto){

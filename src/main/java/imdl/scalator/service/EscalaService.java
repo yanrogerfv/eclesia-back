@@ -167,4 +167,12 @@ public class EscalaService {
         return levita;
     }
 
+    public void cleanEscalas(){
+        List<Escala> escalas = escalaRepository.findAll().stream().map(EscalaMapper::entityToDomain).toList();
+        for (int i = 0; i < escalas.size(); i++) {
+            if(escalas.get(i).getData().isBefore(LocalDate.now()))
+                escalaRepository.deleteById(escalas.get(i).getId());
+        }
+    }
+
 }

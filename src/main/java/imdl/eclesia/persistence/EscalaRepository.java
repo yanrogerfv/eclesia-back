@@ -5,12 +5,22 @@ import imdl.eclesia.entity.EscalaResumedEntity;
 import imdl.eclesia.entity.MusicaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public interface EscalaRepository extends JpaRepository<EscalaEntity, UUID> {
+
+    @Query("SELECT e FROM EscalaEntity e WHERE e.ministro.id = :levita " +
+            "OR e.baixo.id = :levita " +
+            "OR e.bateria.id = :levita " +
+            "OR e.guitarra.id = :levita " +
+            "OR e.teclado.id = :levita " +
+            "OR e.violao.id = :levita " +
+            "OR :levita IN (SELECT b.id FROM e.back b)")
+    List<EscalaEntity> findAll(@Param("levita") UUID levita);
 
     @Query("SELECT e FROM EscalaEntity e WHERE MONTH(e.data) = :month")
     List<EscalaEntity> findAllInMonth(int month);

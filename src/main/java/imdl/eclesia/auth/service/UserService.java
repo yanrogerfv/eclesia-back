@@ -53,7 +53,7 @@ public class UserService {
         UserOutput output = new UserOutput();
         output.setId(dto.getId());
         output.setUsername(dto.getUsername());
-        output.setRole(dto.getRole().getRole());
+        output.setRole(dto.getRole());
         if(dto.getLevitaId() != null)
             output.setLevita(levitaService.findById(dto.getLevitaId()));
         return output;
@@ -89,7 +89,7 @@ public class UserService {
             throw new RogueException("A senha deve possuir 8 caracteres ou mais.");
     }
 
-    public UserDTO findByUsername(String username) {
-        return UserDTO.toDTO(userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found.")));
+    public UserOutput findByUsername(String username) {
+        return dtoToOutput(UserDTO.toDTO(userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found."))));
     }
 }

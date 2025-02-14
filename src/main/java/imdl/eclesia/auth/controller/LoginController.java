@@ -4,6 +4,7 @@ import imdl.eclesia.auth.configuration.AuthManager;
 import imdl.eclesia.auth.configuration.JwtUtil;
 import imdl.eclesia.auth.controller.input.LoginRequest;
 import imdl.eclesia.auth.controller.output.LoginOutput;
+import imdl.eclesia.auth.controller.output.UserOutput;
 import imdl.eclesia.auth.dto.UserDTO;
 import imdl.eclesia.auth.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,9 +35,9 @@ public class LoginController {
                         loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         System.out.println(SecurityContextHolder.getContext().getAuthentication());
-        UserDTO user = userService.findByUsername(loginRequest.getUsername());
+        UserOutput user = userService.findByUsername(loginRequest.getUsername());
 
-        return new LoginOutput(JwtUtil.generateToken(loginRequest.getUsername()), user.getUsername(), user.getRole().getRole()
+        return new LoginOutput(JwtUtil.generateToken(loginRequest.getUsername()), user
 //                SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().toList().get(0).getAuthority()
         );
     }

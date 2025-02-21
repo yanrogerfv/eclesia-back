@@ -85,10 +85,10 @@ public class  LevitaController {
         return levitaService.getLevitaAgenda(id);
     }
 
-    @PatchMapping("/agenda/{id}")
+    @PostMapping("/agenda/{id}")
     @Operation(summary = "Adiciona uma data à agenda de um Levita.")
-    public Levita addDataInAgenda(@PathVariable UUID id, @RequestParam LocalDate date){
-        return levitaService.addDataInAgenda(id, date);
+    public Levita setLevitaAgenda(@PathVariable UUID id, @RequestBody List<LocalDate> dates){
+        return levitaService.setLevitaAgenda(id, dates);
     }
 
     @PutMapping("/agenda/{id}")

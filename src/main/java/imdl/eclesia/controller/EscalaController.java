@@ -84,6 +84,12 @@ public class EscalaController {
         escalaService.deleteEscala(escalaId);
     }
 
+    @DeleteMapping("/clean")
+    @Operation(summary = "Deletar escalas antigas.")
+    public void cleanEscalas(){
+        escalaService.cleanEscalas();
+    }
+
     //Músicas na Escala
     @GetMapping("/musicas")
     @Operation(summary = "Lista as músicas em uma escala.")

@@ -42,13 +42,13 @@ public class LevitaService {
                 .sorted(Comparator.comparing(Levita::getNome)).toList();
     }
 
-    public List<Levita> findAllDisponivel(LocalDate date){
-        return levitaRepository.findAll().stream().map(LevitaMapper::entityToDomain)
+    public List<LevitaResumed> findAllDisponivel(LocalDate date){
+        return levitaRepository.findAllResumed().stream().map(LevitaMapper::entityToDomainResumed)
                 .filter(levita -> {
                     if(levita.getAgenda() == null)
                         return true;
                     return !levita.getAgenda().contains(date);
-                }).sorted(Comparator.comparing(Levita::getNome)).toList();
+                }).sorted(Comparator.comparing(LevitaResumed::getNome)).toList();
     }
     public List<Levita> findAllByInstrument(Long instrumento){
         return levitaRepository.findAllByInstrumento(instrumento).stream()

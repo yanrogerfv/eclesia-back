@@ -5,6 +5,7 @@ import imdl.eclesia.auth.controller.output.UserOutput;
 import imdl.eclesia.auth.dto.RoleDTO;
 import imdl.eclesia.auth.service.RoleService;
 import imdl.eclesia.auth.service.UserService;
+import imdl.eclesia.domain.LevitaResumed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,6 +52,12 @@ public class AuthController {
         userService.remove(id);
     }
 
+    @GetMapping("/user/levita-x")
+    @Operation(summary = "List of all levitas without login.")
+    public List<LevitaResumed> listLevitasWithoutLogin(){
+        return userService.listLevitasWithoutLogin();
+    }
+
     @GetMapping("/role")
     @Operation(summary = "List of all roles.")
     public List<RoleDTO> listRoles(){
@@ -84,5 +91,10 @@ public class AuthController {
     @GetMapping("/test")
     public String test() {
         return SecurityContextHolder.getContext().getAuthentication().toString();
+    }
+
+    @GetMapping("/recover")
+    public void recover(String username) {
+        userService.forgotPasswordStep1(username);
     }
 }

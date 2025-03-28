@@ -10,6 +10,7 @@ import imdl.eclesia.domain.input.EscalaInput;
 import imdl.eclesia.persistence.EscalaRepository;
 import imdl.eclesia.service.mapper.EscalaMapper;
 import imdl.eclesia.service.mapper.MusicaMapper;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -171,11 +172,12 @@ public class EscalaService {
         return levita;
     }
 
+    @Transactional
     public void cleanEscalas(){
         List<Escala> escalas = escalaRepository.findAll().stream().map(EscalaMapper::entityToDomain).toList();
-        for (int i = 0; i < escalas.size(); i++) {
-            if(escalas.get(i).getData().isBefore(LocalDate.now()))
-                escalaRepository.deleteById(escalas.get(i).getId());
+        for (Escala escala : escalas) {
+            if (escala.getData().isBefore(LocalDate.now().minusDays(30)))
+                escalaRepository.deleteById(escala.getId());
         }
     }
 

@@ -4,9 +4,12 @@ import imdl.eclesia.auth.controller.input.UserInput;
 import imdl.eclesia.auth.controller.output.UserOutput;
 import imdl.eclesia.auth.dto.UserDTO;
 import imdl.eclesia.auth.repository.UserRepository;
+import imdl.eclesia.domain.Levita;
+import imdl.eclesia.domain.LevitaResumed;
 import imdl.eclesia.domain.exception.EntityNotFoundException;
 import imdl.eclesia.domain.exception.RogueException;
 import imdl.eclesia.service.LevitaService;
+import imdl.eclesia.service.utils.MailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
@@ -19,10 +22,13 @@ public class UserService {
     private final RoleService roleService;
     private final BCryptPasswordEncoder crypt = new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2Y, 12);
 
-    public UserService(LevitaService levitaService, UserRepository userRepository, RoleService roleService) {
+    private final MailSender mailSender;
+
+    public UserService(LevitaService levitaService, UserRepository userRepository, RoleService roleService, MailSender mailSender) {
         this.levitaService = levitaService;
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.mailSender = mailSender;
     }
 
     public List<UserOutput> list(){
@@ -43,6 +49,14 @@ public class UserService {
         dto.setPassword(crypt.encode(input.getPasscode()));
         dto.setLevitaId(levitaService.findById(input.getLevitaId()).getId());
         return dtoToOutput(UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto))));
+    }
+
+    public void forgotPasswordStep1(String username){
+        UserDTO dto = userRepository.findByUsername(username).map(UserDTO::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        mailSender.sendSimpleMessage("yanrogerfv@gmail.com", "Recuperação de senha", "Bip bop bip?");
+//        dto.setPassword(crypt.encode("12345678"));
+//        userRepository.save(UserDTO.toEntity(dto));
     }
 
     public void remove(UUID id){
@@ -91,5 +105,10 @@ public class UserService {
 
     public UserOutput findByUsername(String username) {
         return dtoToOutput(UserDTO.toDTO(userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found."))));
+    }
+
+    public List<LevitaResumed> listLevitasWithoutLogin(){
+        System.out.println("Listing levitas without login...");
+        return levitaService.findAllResumed().stream().filter(levita -> !userRepository.existsByLevitaId(levita.getId())).toList();
     }
 }

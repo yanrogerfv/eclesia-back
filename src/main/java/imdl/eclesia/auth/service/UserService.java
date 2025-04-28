@@ -1,15 +1,16 @@
 package imdl.eclesia.auth.service;
 
+import imdl.eclesia.auth.controller.input.LoginRequest;
 import imdl.eclesia.auth.controller.input.UserInput;
 import imdl.eclesia.auth.controller.output.UserOutput;
 import imdl.eclesia.auth.dto.UserDTO;
 import imdl.eclesia.auth.repository.UserRepository;
-import imdl.eclesia.domain.Levita;
 import imdl.eclesia.domain.LevitaResumed;
 import imdl.eclesia.domain.exception.EntityNotFoundException;
 import imdl.eclesia.domain.exception.RogueException;
 import imdl.eclesia.service.LevitaService;
 import imdl.eclesia.service.utils.MailSender;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
@@ -101,6 +102,12 @@ public class UserService {
             throw new RogueException("Senha vazia!");
         if(password.length() < 8)
             throw new RogueException("A senha deve possuir 8 caracteres ou mais.");
+    }
+
+    public boolean validateLogin(LoginRequest loginRequest) {
+        UserDTO dto = userRepository.findByUsername(loginRequest.getUsername()).map(UserDTO::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return crypt.matches(loginRequest.getPassword(), dto.getPassword());
     }
 
     public UserOutput findByUsername(String username) {

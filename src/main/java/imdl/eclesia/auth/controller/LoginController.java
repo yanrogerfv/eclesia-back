@@ -5,8 +5,8 @@ import imdl.eclesia.auth.configuration.JwtUtil;
 import imdl.eclesia.auth.controller.input.LoginRequest;
 import imdl.eclesia.auth.controller.output.LoginOutput;
 import imdl.eclesia.auth.controller.output.UserOutput;
-import imdl.eclesia.auth.dto.UserDTO;
 import imdl.eclesia.auth.service.UserService;
+import imdl.eclesia.domain.exception.RogueException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +29,8 @@ public class LoginController {
 
     @PostMapping("/login")
     public LoginOutput login(@RequestBody LoginRequest loginRequest){
+        if(!userService.validateLogin(loginRequest))
+            throw new RogueException("Login inválido");
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),

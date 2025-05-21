@@ -8,5 +8,4 @@ import java.time.LocalDate;
 public class LevitaFilter {
     private String nome;
     private Long instrumento;
-    private LocalDate dat;
 }

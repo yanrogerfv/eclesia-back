@@ -16,7 +16,7 @@ public interface LevitaRepository extends JpaRepository<LevitaEntity, UUID> {
 
     @Query("SELECT l FROM LevitaEntity l " +
             "LEFT JOIN l.instrumentos i WHERE (:instrumento IS NULL OR i.id = :instrumento)" +
-            "AND (:nome IS NULL OR l.nome = :nome) ")
+            "AND (:nome IS NULL OR LOWER(l.nome) LIKE CONCAT('%',LOWER(CAST(:nome AS text)),'%')  ) ")
     List<LevitaEntity> findAll(@Param("nome") String nome,
                                @Param("instrumento") Long instrumento);
 

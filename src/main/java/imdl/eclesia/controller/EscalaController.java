@@ -3,11 +3,13 @@ package imdl.eclesia.controller;
 import imdl.eclesia.domain.Escala;
 import imdl.eclesia.domain.EscalaResumed;
 import imdl.eclesia.domain.Musica;
+import imdl.eclesia.domain.exception.PermissionException;
 import imdl.eclesia.domain.input.EscalaInput;
 import imdl.eclesia.domain.input.MusicasIdsInput;
 import imdl.eclesia.service.EscalaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +29,8 @@ public class EscalaController {
 
     @GetMapping
     @Operation(summary = "Lista com todas as escalas.")
-    public List<Escala> listFullEscalas(){
-        return escalaService.findAllEscalas();
+    public List<Escala> listFullEscalas(@RequestParam(required = false) UUID levita){
+        return escalaService.findAllEscalas(levita);
     }
 
     @GetMapping("/resumed")
@@ -58,18 +60,27 @@ public class EscalaController {
     @PostMapping
     @Operation(summary = "Criar uma nova escala.")
     public Escala createEscala(@RequestBody EscalaInput input){
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .stream().noneMatch(a -> a.getAuthority().equals("ADMIN") || a.getAuthority().equals("Líder")))
+            throw new PermissionException("Usuário não possui permissão para criar uma escala.");
         return escalaService.create(input);
     }
 
     @PutMapping
     @Operation(summary = "Atualiza uma escala.")
     public Escala updateEscala(@RequestBody EscalaInput input){
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .stream().noneMatch(a -> a.getAuthority().equals("ADMIN") || a.getAuthority().equals("Líder")))
+            throw new PermissionException("Usuário não possui permissão para editar uma escala.");
         return escalaService.update(input);
     }
 
     @DeleteMapping("/{escalaId}")
     @Operation(summary = "Deletar uma escala.")
     public void deleteEscala(@PathVariable UUID escalaId){
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .stream().noneMatch(a -> a.getAuthority().equals("ADMIN") || a.getAuthority().equals("Líder")))
+            throw new PermissionException("Usuário não possui permissão para deletar uma escala.");
         escalaService.deleteEscala(escalaId);
     }
 

@@ -17,7 +17,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=builder /app/target/Gerenciador-de-Tarefas-*.jar app.jar
+COPY --from=builder /app/target/eclesia-*.jar app.jar
 USER 1000
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

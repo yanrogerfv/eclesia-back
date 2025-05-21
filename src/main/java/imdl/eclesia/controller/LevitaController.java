@@ -75,7 +75,7 @@ public class  LevitaController {
 
     @GetMapping("/agenda")
     @Operation(summary = "Listagem de Levitas disponíveis para uma data.")
-    public List<Levita> listDisponivelInData(@RequestParam LocalDate date){
+    public List<LevitaResumed> listDisponivelInData(@RequestParam LocalDate date){
         return levitaService.findAllDisponivel(date);
     }
 
@@ -85,10 +85,10 @@ public class  LevitaController {
         return levitaService.getLevitaAgenda(id);
     }
 
-    @PatchMapping("/agenda/{id}")
-    @Operation(summary = "Adiciona uma data à agenda de um Levita.")
-    public Levita addDataInAgenda(@PathVariable UUID id, @RequestParam LocalDate date){
-        return levitaService.addDataInAgenda(id, date);
+    @PostMapping("/agenda/{id}")
+    @Operation(summary = "Adiciona uma lista de datas à agenda de um Levita.")
+    public Levita setLevitaAgenda(@PathVariable UUID id, @RequestBody List<LocalDate> dates){
+        return levitaService.setLevitaAgenda(id, dates);
     }
 
     @PutMapping("/agenda/{id}")

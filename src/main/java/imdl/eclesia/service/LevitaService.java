@@ -38,16 +38,17 @@ public class LevitaService {
     }
 
     public List<Levita> findAllById(List<UUID> ids){
-        return levitaRepository.findAllById(ids).stream().map(LevitaMapper::entityToDomain).toList();
+        return levitaRepository.findAllById(ids).stream().map(LevitaMapper::entityToDomain)
+                .sorted(Comparator.comparing(Levita::getNome)).toList();
     }
 
-    public List<Levita> findAllDisponivel(LocalDate date){
-        return levitaRepository.findAll().stream().map(LevitaMapper::entityToDomain)
+    public List<LevitaResumed> findAllDisponivel(LocalDate date){
+        return levitaRepository.findAllResumed().stream().map(LevitaMapper::entityToDomainResumed)
                 .filter(levita -> {
                     if(levita.getAgenda() == null)
                         return true;
                     return !levita.getAgenda().contains(date);
-                }).sorted(Comparator.comparing(Levita::getNome)).toList();
+                }).sorted(Comparator.comparing(LevitaResumed::getNome)).toList();
     }
     public List<Levita> findAllByInstrument(Long instrumento){
         return levitaRepository.findAllByInstrumento(instrumento).stream()
@@ -140,18 +141,12 @@ public class LevitaService {
         return levita;
     }
 
-    public Levita addDataInAgenda(UUID id, LocalDate date){
+    public Levita setLevitaAgenda(UUID id, List<LocalDate> dates){
         Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrado.")));
-        List<LocalDate> agenda = new ArrayList<>();
-        if(levita.getAgenda() != null)
-            agenda = levita.getAgenda();
-        if(agenda.contains(date))
-            throw new RogueException("Data já inserida.");
-        if(date.isBefore(LocalDate.now()))
+        if(dates.stream().anyMatch(date -> date.isBefore(LocalDate.now())))
             throw new RogueException("Data já passou.");
-        agenda.add(date);
-        levita.setAgenda(agenda);
+        levita.setAgenda(dates);
         return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
     }
 

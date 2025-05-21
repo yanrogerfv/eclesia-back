@@ -10,6 +10,7 @@ import java.util.UUID;
 public class EscalaInput {
     private UUID id;
     private LocalDate data;
+    private boolean especial;
     private String titulo;
     private UUID ministro;
     private UUID baixo;

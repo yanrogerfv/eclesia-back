@@ -82,9 +82,8 @@ public class EscalaService {
     public Escala setMusicasInEscala(UUID escalaId, List<UUID> musicasIds){
         Escala escala = findById(escalaId);
         List<Musica> musicas = new ArrayList<>();
-        if(musicasIds == null || musicasIds.isEmpty())
-            throw new RogueException("Nenhuma música foi selecionada.");
-        musicasIds.forEach(id -> musicas.add(musicaService.findById(id)));
+        if(!(musicasIds == null || musicasIds.isEmpty()))
+            musicasIds.forEach(id -> musicas.add(musicaService.findById(id)));
         escala.setMusicas(musicas);
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }

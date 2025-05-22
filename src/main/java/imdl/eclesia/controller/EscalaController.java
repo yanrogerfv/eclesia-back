@@ -91,13 +91,13 @@ public class EscalaController {
     }
 
     //Músicas na Escala
-    @GetMapping("/musicas")
+    @GetMapping("/musicas/{escalaId}")
     @Operation(summary = "Lista as músicas em uma escala.")
-    public List<Musica> listMusicasInEscal(@RequestParam UUID escalaId){
+    public List<Musica> listMusicasInEscala(@PathVariable UUID escalaId){
         return escalaService.findMusicasInEscala(escalaId);
     }
 
-    @PostMapping("/musicas/{escalaId}")
+    @PutMapping("/musicas/{escalaId}")
     @Operation(summary = "Adiciona uma música na escala.")
     public Escala addMusicaInEscala(@PathVariable UUID escalaId, @RequestBody MusicasIdsInput musicasIds){
         return escalaService.setMusicasInEscala(escalaId, musicasIds.getMusicasIds());

@@ -11,6 +11,7 @@ import imdl.eclesia.domain.exception.RogueException;
 import imdl.eclesia.service.LevitaService;
 import imdl.eclesia.service.utils.MailSender;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
@@ -77,7 +78,10 @@ public class UserService {
     private UserDTO inputToDTO(UserInput input){
         UserDTO dto = new UserDTO();
         dto.setUsername(input.getUsername());
-        dto.setRole(roleService.findById(input.getRole()));
+        if (input.getRole() == null)
+            dto.setRole(roleService.list().stream().filter(r -> r.getRole().equals("Levita"))
+                .findFirst().orElseThrow(() -> new RogueException("Cargo não encontrado.")));
+        else dto.setRole(roleService.findById(input.getRole()));
         dto.setPassword(crypt.encode(input.getPasscode()));
         dto.setLevitaId(levitaService.findById(input.getLevitaId()).getId());
         return dto;
@@ -117,5 +121,9 @@ public class UserService {
     public List<LevitaResumed> listLevitasWithoutLogin(){
         System.out.println("Listing levitas without login...");
         return levitaService.findAllResumed().stream().filter(levita -> !userRepository.existsByLevitaId(levita.getId())).toList();
+    }
+
+    public UserOutput activeUser() {
+        return findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }

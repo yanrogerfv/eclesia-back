@@ -12,11 +12,9 @@ import java.util.List;
 public class InstrumentoService {
 
     private final InstrumentoRepository instrumentoRepository;
-    private final LevitaService levitaService;
 
-    public InstrumentoService(InstrumentoRepository instrumentoRepository, LevitaService levitaService) {
+    public InstrumentoService(InstrumentoRepository instrumentoRepository) {
         this.instrumentoRepository = instrumentoRepository;
-        this.levitaService = levitaService;
     }
 
     public List<Instrumento> findAll(){
@@ -40,8 +38,6 @@ public class InstrumentoService {
     public void deleteInstrumento(Long id){
         if(!instrumentoRepository.existsById(id))
             throw new RogueException("Não existe um instrumento com este ID.");
-        if(!levitaService.findAllByInstrument(id).isEmpty())
-            throw new RogueException("Não é possível excluir o instrumento, pois ele está vinculado a um levita.");
         instrumentoRepository.deleteById(id);
     }
 }

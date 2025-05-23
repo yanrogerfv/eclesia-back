@@ -34,6 +34,12 @@ public class AuthController {
         return userService.list();
     }
 
+    @GetMapping("/user/active")
+    @Operation(summary = "Return the logged user.")
+    public UserOutput active(){
+        return userService.activeUser();
+    }
+
     @PostMapping("/user")
     @Operation(summary = "Create a new user.")
     public UserOutput createUser(@RequestBody UserInput input){

@@ -92,8 +92,6 @@ public class UserService {
             throw new RogueException("Nome de usuário não deve estar vazio.");
         if(userRepository.existsByUsername(input.getUsername()))
             throw new RogueException("Já existe um cadastro com este nome de usuário.");
-        if(input.getRole() == null)
-            throw new RogueException("Cargo não selecionado.");
         if(input.getLevitaId() == null)
             throw new RogueException("Levita não selecionado.");
         if(userRepository.existsByLevitaId(input.getLevitaId()))

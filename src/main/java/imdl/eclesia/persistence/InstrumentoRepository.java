@@ -10,4 +10,7 @@ public interface InstrumentoRepository extends JpaRepository<InstrumentoEntity, 
 
     @Query("SELECT (MAX(i.id)+1) FROM InstrumentoEntity i")
     Long findNextSequential();
+
+    @Query("SELECT COUNT(l)>0 FROM LevitaEntity l WHERE l.instrumentos.id = ?1")
+    boolean existsByLevita(Long id);
 }

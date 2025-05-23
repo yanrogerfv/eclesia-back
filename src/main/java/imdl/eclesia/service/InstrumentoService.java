@@ -38,6 +38,8 @@ public class InstrumentoService {
     public void deleteInstrumento(Long id){
         if(!instrumentoRepository.existsById(id))
             throw new RogueException("Não existe um instrumento com este ID.");
+        if(instrumentoRepository.existsByLevita(id))
+            throw new RogueException("Não é possível excluir um instrumento que está vinculado a um levita.");
         instrumentoRepository.deleteById(id);
     }
 }

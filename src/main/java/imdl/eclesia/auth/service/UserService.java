@@ -5,11 +5,13 @@ import imdl.eclesia.auth.controller.input.UserInput;
 import imdl.eclesia.auth.controller.output.UserOutput;
 import imdl.eclesia.auth.dto.UserDTO;
 import imdl.eclesia.auth.repository.UserRepository;
+import imdl.eclesia.domain.Levita;
 import imdl.eclesia.domain.LevitaResumed;
 import imdl.eclesia.domain.exception.EntityNotFoundException;
 import imdl.eclesia.domain.exception.RogueException;
 import imdl.eclesia.service.LevitaService;
 import imdl.eclesia.service.utils.MailSender;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 public class UserService {
 
     private final LevitaService levitaService;
@@ -117,11 +120,35 @@ public class UserService {
     }
 
     public List<LevitaResumed> listLevitasWithoutLogin(){
-        System.out.println("Listing levitas without login...");
+        log.info("Listing levitas without login...");
         return levitaService.findAllResumed().stream().filter(levita -> !userRepository.existsByLevitaId(levita.getId())).toList();
     }
 
     public UserOutput activeUser() {
         return findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    public void restore(UUID id) {
+        UserDTO dto = userRepository.findById(id).map(UserDTO::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        log.info("Restoring password for user: {}", dto.getUsername());
+        Levita levita = levitaService.findById(dto.getLevitaId());
+
+        dto.setPassword(crypt.encode("12345678"));
+        userRepository.save(UserDTO.toEntity(dto));
+//        if(levita.getEmail() == null || levita.getEmail().isBlank()) {
+//            log.warn("Levita with ID {} has no email set, cannot send password restoration email.", dto.getLevitaId());
+//            throw new RogueException("Levita has no email set.");
+//        }
+        if (levita.getEmail() != null)
+            mailSender.sendSimpleMessage(levita.getEmail(), "Recuperação de senha - Eclesia Software", "Sua senha foi restaurada. Por favor, altere-a assim que possível.");
+        log.info("Password restored for user: {}", dto.getUsername());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getName().equals(dto.getUsername())) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+        }
+        log.info("User logged out after password restoration.");
+        // Optionally, you can log out the user or invalidate the session here
+
     }
 }

@@ -22,6 +22,16 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private final String[] PUBLIC_URLS = {
+            "/auth/login",
+            "/auth/register",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/h2-console/**",
+            "/error",
+            "/v1/escalas/resumed"
+    };
 
     public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
@@ -46,7 +56,17 @@ public class SecurityConfig {
 //                .build();
 
         return http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/login", "/login", "/error").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request.requestMatchers(
+                    "/auth/login",
+                    "/auth/register",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/h2-console/**",
+                    "/error",
+                    "/v1/escala/resumed",
+                    "/v1/escala/find/**",
+                    "/v1/escala/musicas/**").permitAll().anyRequest().authenticated())
 //                .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

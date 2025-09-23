@@ -51,7 +51,7 @@ public class EscalaController {
         return escalaService.findNextEscalasResumidas();
     }
 
-    @GetMapping("/{escalaId}")
+    @GetMapping("/find/{escalaId}")
     @Operation(summary = "Retorna uma escala à partir de um ID.")
     public Escala findById(@PathVariable UUID escalaId){
         return escalaService.findById(escalaId);

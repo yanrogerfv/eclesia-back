@@ -43,4 +43,9 @@ public class LoginController {
 //                SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().toList().get(0).getAuthority()
         );
     }
+
+    @GetMapping("/validate-token")
+    public void validateToken(@RequestHeader(name = "Authorization") String token){
+        JwtUtil.validateToken(token);
+    }
 }

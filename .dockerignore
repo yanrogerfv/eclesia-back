@@ -1,0 +1,19 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Build artifacts
+target/
+build/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Application development yaml
+*-development.yaml

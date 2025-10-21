@@ -45,7 +45,7 @@ public class LoginController {
     }
 
     @GetMapping("/validate-token")
-    public void validateToken(@RequestHeader(name = "Authorization") String token){
-        JwtUtil.validateToken(token);
+    public boolean validateToken(@RequestHeader(name = "Authorization") String token){
+        return !JwtUtil.validateToken(token).isEmpty();
     }
 }

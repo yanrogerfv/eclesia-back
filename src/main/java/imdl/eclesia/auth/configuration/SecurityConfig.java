@@ -48,12 +48,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        return http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(request -> request.requestMatchers("/auth/login", "/login", "/error").permitAll().anyRequest().authenticated())
-////                .formLogin(Customizer.withDefaults())
-//                .httpBasic(Customizer.withDefaults())
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .build();
 
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers(
@@ -64,10 +58,10 @@ public class SecurityConfig {
                     "/swagger-ui.html",
                     "/h2-console/**",
                     "/error",
+                    "/auth/validate-token",
                     "/v1/escala/resumed",
                     "/v1/escala/find/**",
                     "/v1/escala/musicas/**").permitAll().anyRequest().authenticated())
-//                .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

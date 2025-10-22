@@ -39,13 +39,11 @@ public class LoginController {
         System.out.println(SecurityContextHolder.getContext().getAuthentication());
         UserOutput user = userService.findByUsername(loginRequest.getUsername());
 
-        return new LoginOutput(JwtUtil.generateToken(loginRequest.getUsername()), user
-//                SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().toList().get(0).getAuthority()
-        );
+        return new LoginOutput(JwtUtil.generateToken(loginRequest.getUsername()), user);
     }
 
     @GetMapping("/validate-token")
-    public boolean validateToken(@RequestHeader(name = "Authorization") String token){
-        return !JwtUtil.validateToken(token).isEmpty();
+    public boolean validateToken(){
+        return true;
     }
 }

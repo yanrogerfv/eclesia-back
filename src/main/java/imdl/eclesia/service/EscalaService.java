@@ -11,13 +11,18 @@ import imdl.eclesia.persistence.EscalaRepository;
 import imdl.eclesia.service.mapper.EscalaMapper;
 import imdl.eclesia.service.mapper.MusicaMapper;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+@Slf4j
 public class EscalaService {
 
     private final EscalaRepository escalaRepository;
@@ -106,7 +111,7 @@ public class EscalaService {
         if(input.getTitulo() == null || input.getTitulo().isBlank())
             throw new RogueException("A escala está sem título.");
         if(input.getMinistro() == null)
-            throw new RogueException("Favor inserir um ministro para a escala.");
+            log.warn("A escala de {} está sem ministro, criada/alterada por {}", input.getData(), SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     private Escala inputToDomain(EscalaInput input){
@@ -114,38 +119,43 @@ public class EscalaService {
         if(input.getId() != null)
             escala = EscalaMapper.entityToDomain(escalaRepository.findById(input.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
+
         escala.setData(input.getData());
         escala.setTitulo(input.getTitulo());
-        escala.setMinistro(findLevita(input.getMinistro(), input.getData()));
-        if(input.getBaixo() != null)
-            escala.setBaixo(findLevita(input.getBaixo(), input.getData()));
-        else
-            escala.setBaixo(null);
-        if(input.getBateria() != null)
-            escala.setBateria(findLevita(input.getBateria(), input.getData()));
-        else
-            escala.setBateria(null);
-        if(input.getGuitarra() != null)
-            escala.setGuitarra(findLevita(input.getGuitarra(), input.getData()));
-        else
-            escala.setGuitarra(null);
-        if(input.getTeclado() != null)
-            escala.setTeclado(findLevita(input.getTeclado(), input.getData()));
-        else
-            escala.setTeclado(null);
-        if(input.getViolao() != null)
-            escala.setViolao(findLevita(input.getViolao(), input.getData()));
-        else
-            escala.setViolao(null);
+
+        BiConsumer<UUID, Consumer<Levita>> setLevita = (levitaId, setter) -> {
+             if (setter == null) return;
+             if (levitaId == null) {
+                 setter.accept(null);
+             } else {
+                 setter.accept(findLevita(levitaId, input.getData()));
+             }
+         };
+
+         setLevita.accept(input.getMinistro(), escala::setMinistro);
+         setLevita.accept(input.getBaixo(), escala::setBaixo);
+         setLevita.accept(input.getBateria(), escala::setBateria);
+         setLevita.accept(input.getGuitarra(), escala::setGuitarra);
+         setLevita.accept(input.getTeclado(), escala::setTeclado);
+         setLevita.accept(input.getViolao(), escala::setViolao);
+
         if(input.getBacks() != null) {
-            escala.setBack(levitaService.findAllById(input.getBacks()));
-            escala.getBack().forEach(levita -> {
-                if(levita.getAgenda().contains(input.getData()))
-                    throw new RogueException(levita.getNome() + " não está disponível para essa data.");
-            });
+            List<Levita> backs = levitaService.findAllById(input.getBacks());
+            var unavailable = backs.stream()
+                    .filter(l -> l.getAgenda() != null && l.getAgenda().contains(input.getData()))
+                    .findFirst();
+            if (unavailable.isPresent())
+                throw new RogueException(unavailable.get().getNome() + " não está disponível para essa data.");
+            escala.setBack(backs);
         }
+
         if (input.getObservacoes() != null)
             escala.setObservacoes(input.getObservacoes());
+
+        escala.setEspecial(false);
+        escala.setDomingo(false);
+        escala.setQuarta(false);
+
         if (input.isEspecial()){
             escala.setEspecial(true);
         } else {

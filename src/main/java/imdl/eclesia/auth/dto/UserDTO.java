@@ -19,6 +19,7 @@ public class UserDTO implements UserDetails {
     private String username;
     private String password;
     private UUID levitaId;
+    private String accessCode;
 
     public static UserEntity toEntity(UserDTO dto){
         UserEntity user = new UserEntity();
@@ -27,6 +28,7 @@ public class UserDTO implements UserDetails {
         user.setUsername(dto.getUsername());
         user.setPasscode(dto.getPassword());
         user.setLevitaId(dto.getLevitaId());
+        user.setAccessCode(dto.getAccessCode());
         return user;
     }
 
@@ -37,15 +39,8 @@ public class UserDTO implements UserDetails {
         dto.setUsername(user.getUsername());
         dto.setPassword(user.getPasscode());
         dto.setLevitaId(user.getLevitaId());
+        dto.setAccessCode(user.getAccessCode());
         return dto;
-    }
-
-    public UserDTO(UUID id, RoleDTO role, String username, String password, UUID levitaId) {
-        this.id = id;
-        this.role = role;
-        this.username = username;
-        this.password = password;
-        this.levitaId = levitaId;
     }
 
     @Override

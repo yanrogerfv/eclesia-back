@@ -10,5 +10,5 @@ public class UserInput {
     private UUID role;
     private String username;
     private String passcode;
-    private UUID levitaId;
+    private String accessCode;
 }

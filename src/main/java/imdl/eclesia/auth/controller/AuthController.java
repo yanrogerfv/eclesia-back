@@ -2,6 +2,7 @@ package imdl.eclesia.auth.controller;
 
 import imdl.eclesia.auth.controller.input.UserInput;
 import imdl.eclesia.auth.controller.output.UserOutput;
+import imdl.eclesia.auth.dto.CreateUserOutput;
 import imdl.eclesia.auth.dto.RoleDTO;
 import imdl.eclesia.auth.service.RoleService;
 import imdl.eclesia.auth.service.UserService;
@@ -42,8 +43,8 @@ public class AuthController {
 
     @PostMapping("/user")
     @Operation(summary = "Create a new user.")
-    public UserOutput createUser(@RequestBody UserInput input){
-        return userService.create(input);
+    public CreateUserOutput createUser(@RequestBody UUID levitaId){
+        return userService.createUserNotActive(levitaId);
     }
 
     @PatchMapping("/user/restore/{id}")

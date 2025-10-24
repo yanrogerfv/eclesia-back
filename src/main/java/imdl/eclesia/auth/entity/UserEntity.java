@@ -18,4 +18,5 @@ public class UserEntity {
     @OneToOne
     private RoleEntity role;
     private UUID levitaId;
+    private String accessCode;
 }

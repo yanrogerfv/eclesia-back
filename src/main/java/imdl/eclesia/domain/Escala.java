@@ -27,6 +27,41 @@ public class Escala {
     private List<Musica> musicas;
     private String observacoes;
 
+    public Escala update(Escala escala) {
+        this.titulo = escala.titulo;
+        this.data = escala.data;
+        this.observacoes = escala.observacoes;
+
+        this.quarta = escala.quarta;
+        this.domingo = escala.domingo;
+        this.especial = escala.especial;
+
+        if (escala.ministro != null) {
+            this.ministro = escala.ministro;
+            this.ministroNome = escala.ministroNome;
+        } if (escala.violao != null) {
+            this.violao = escala.violao;
+            this.violaoNome = escala.violaoNome;
+        } if (escala.teclado != null) {
+            this.teclado = escala.teclado;
+            this.tecladoNome = escala.tecladoNome;
+        } if (escala.bateria != null) {
+            this.bateria = escala.bateria;
+            this.bateriaNome = escala.bateriaNome;
+        } if (escala.baixo != null) {
+            this.baixo = escala.baixo;
+            this.baixoNome = escala.baixoNome;
+        } if (escala.guitarra != null) {
+            this.guitarra = escala.guitarra;
+            this.guitarraNome = escala.guitarraNome;
+        }
+
+        this.back = escala.back;
+        this.musicas = escala.musicas;
+
+        return this;
+    }
+
     public UUID getId() {
         return id;
     }

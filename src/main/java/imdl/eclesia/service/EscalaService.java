@@ -68,9 +68,11 @@ public class EscalaService {
 
     public Escala update(EscalaInput input){
         validateInput(input);
+        Escala old = findById(input.getId());
         Escala escala = inputToDomain(input);
-        escalaRepository.save(EscalaMapper.domainToEntity(escala));
-        return escala;
+
+        old.update(escala);
+        return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(old)));
     }
 
     public void deleteEscala(UUID id){
@@ -116,9 +118,6 @@ public class EscalaService {
 
     private Escala inputToDomain(EscalaInput input){
         Escala escala = new Escala();
-        if(input.getId() != null)
-            escala = EscalaMapper.entityToDomain(escalaRepository.findById(input.getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
 
         escala.setData(input.getData());
         escala.setTitulo(input.getTitulo());

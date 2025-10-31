@@ -41,36 +41,40 @@ public class UserService {
         return userRepository.findAll().stream().map(UserDTO::toDTO).map(this::dtoToOutput).toList();
     }
 
+    public List<UserOutput> listAllNotActive(){
+        return userRepository.findAllByActiveFalse().stream().map(UserDTO::toDTO).map(this::dtoToOutput).toList();
+    }
+
     public CreateUserOutput createUserNotActive(UUID levitaId){
         UserDTO dto = new UserDTO();
 
+        if (levitaId == null || levitaId.toString().isBlank())
+            throw new RogueException("Levita não pode ser vazio.");
         if (userRepository.existsByLevitaId(levitaId))
             throw new RogueException("Já existe um cadastro para este Levita.");
         Levita levita = levitaService.findById(levitaId);
 
         dto.setUsername(levita.getNome().trim().toLowerCase().replace(" ", "."));
+        dto.setRole(roleService.getDefaultRole());
+        dto.setPassword("");
         dto.setLevitaId(levitaId);
 
         dto.setAccessCode(generateAccessCode());
+        dto.setActive(false);
 
-        userRepository.save(UserDTO.toEntity(dto));
+        dto = UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto)));
 
         return new CreateUserOutput(levita.getNome(), dto.getAccessCode());
     }
 
-    public UserOutput register(UserInput input){
+    public UserOutput updateUser(UserInput input){
+        UserDTO dto = userRepository.findByAccessCode(input.getAccessCode()).map(UserDTO::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with access code"));
         validate(input);
-        UserDTO dto = inputToDTO(input);
-        return dtoToOutput(UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto))));
-    }
-
-    public UserOutput edit(UserInput input){
-        validate(input);
-        UserDTO dto = userRepository.findById(input.getId()).map(UserDTO::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        dto.setUsername(input.getUsername());
-        dto.setRole(roleService.findById(input.getRole()));
-        dto.setPassword(crypt.encode(input.getPasscode()));
+        UserDTO update = inputToDTO(input);
+        dto.setUsername(update.getUsername());
+        dto.setRole(update.getRole());
+        dto.setPassword(crypt.encode(update.getPassword()));
         return dtoToOutput(UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto))));
     }
 
@@ -99,8 +103,7 @@ public class UserService {
         UserDTO dto = new UserDTO();
         dto.setUsername(input.getUsername());
         if (input.getRole() == null)
-            dto.setRole(roleService.list().stream().filter(r -> r.getRole().equals("Levita"))
-                .findFirst().orElseThrow(() -> new RogueException("Cargo não encontrado.")));
+            dto.setRole(roleService.getDefaultRole());
         else dto.setRole(roleService.findById(input.getRole()));
         dto.setPassword(crypt.encode(input.getPasscode()));
         dto.setLevitaId(levitaService.findById(input.getLevitaId()).getId());
@@ -170,9 +173,10 @@ public class UserService {
     }
 
     private String generateAccessCode(){
-        String accessCode = null;
-        while (userRepository.existsByAccessCode(accessCode) || accessCode == null)
+        String accessCode;
+        do {
             accessCode = AccessCodeGenerator.generateAccessCode();
+        } while (userRepository.existsByAccessCode(accessCode));
         return accessCode;
     }
 

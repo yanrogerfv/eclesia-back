@@ -56,7 +56,7 @@ public class AuthController {
     @PutMapping("/user")
     @Operation(summary = "Update an user.")
     public UserOutput updateUser(@RequestBody UserInput input){
-        return userService.edit(input);
+        return userService.updateUser(input);
     }
 
     @DeleteMapping("/user/{id}")

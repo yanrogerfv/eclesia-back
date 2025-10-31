@@ -19,4 +19,5 @@ public class UserEntity {
     private RoleEntity role;
     private UUID levitaId;
     private String accessCode;
+    private boolean active;
 }

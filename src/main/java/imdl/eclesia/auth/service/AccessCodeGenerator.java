@@ -1,11 +1,16 @@
 package imdl.eclesia.auth.service;
 
+import java.security.SecureRandom;
+
 public class AccessCodeGenerator {
+    private static final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final SecureRandom random = new SecureRandom();
+    private static final int CODE_LENGTH = 6;
+
     public static String generateAccessCode() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder accessCode = new StringBuilder();
-        for (int i = 0; i < 6; i++) {
-            int randomIndex = (int) (Math.random() * chars.length());
+        StringBuilder accessCode = new StringBuilder(CODE_LENGTH);
+        for (int i = 0; i < CODE_LENGTH; i++) {
+            int randomIndex = (random.nextInt(chars.length()));
             accessCode.append(chars.charAt(randomIndex));
         }
         return accessCode.toString();

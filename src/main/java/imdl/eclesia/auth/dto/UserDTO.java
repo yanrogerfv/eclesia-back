@@ -20,6 +20,14 @@ public class UserDTO implements UserDetails {
     private String password;
     private UUID levitaId;
     private String accessCode;
+    private boolean active;
+
+    public void update(UserDTO userDTO) {
+        this.role = userDTO.getRole();
+        this.username = userDTO.getUsername();
+        this.password = userDTO.getPassword();
+        this.levitaId = userDTO.getLevitaId();
+    }
 
     public static UserEntity toEntity(UserDTO dto){
         UserEntity user = new UserEntity();
@@ -29,6 +37,7 @@ public class UserDTO implements UserDetails {
         user.setPasscode(dto.getPassword());
         user.setLevitaId(dto.getLevitaId());
         user.setAccessCode(dto.getAccessCode());
+        user.setActive(dto.isActive());
         return user;
     }
 
@@ -40,6 +49,7 @@ public class UserDTO implements UserDetails {
         dto.setPassword(user.getPasscode());
         dto.setLevitaId(user.getLevitaId());
         dto.setAccessCode(user.getAccessCode());
+        dto.setActive(user.isActive());
         return dto;
     }
 

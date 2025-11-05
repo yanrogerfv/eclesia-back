@@ -41,6 +41,12 @@ public class AuthController {
         return userService.activeUser();
     }
 
+    @GetMapping("/user/inactive")
+    @Operation(summary = "List of all inactive users.")
+    public List<UserOutput> listInactiveUsers(){
+        return userService.listAllNotActive();
+    }
+
     @PostMapping("/user")
     @Operation(summary = "Create a new user.")
     public CreateUserOutput createUser(@RequestBody UUID levitaId){
@@ -101,13 +107,8 @@ public class AuthController {
         roleService.remove(id);
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return SecurityContextHolder.getContext().getAuthentication().toString();
-    }
-
     @GetMapping("/recover")
-    public void recover(String username) {
-        userService.forgotPasswordStep1(username);
+    public String getNewCodeForUser(UUID userId) {
+        return userService.generateNewAccessCode(userId);
     }
 }

@@ -56,7 +56,7 @@ public class UserService {
 
         dto.setUsername(levita.getNome().trim().toLowerCase().replace(" ", "."));
         dto.setRole(roleService.getDefaultRole());
-        dto.setPassword("");
+        dto.setPassword(crypt.encode(dto.getPassword()));
         dto.setLevitaId(levitaId);
 
         dto.setAccessCode(generateAccessCode());
@@ -72,17 +72,8 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with access code"));
         validate(input);
         UserDTO update = inputToDTO(input);
-        dto.setUsername(update.getUsername());
-        dto.setRole(update.getRole());
-        dto.setPassword(crypt.encode(update.getPassword()));
+        dto.update(update);
         return dtoToOutput(UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto))));
-    }
-
-    public void forgotPasswordStep1(String username){
-        UserDTO dto = userRepository.findByUsername(username).map(UserDTO::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        appMailSender.passwordResetEmail(levitaService.findById(dto.getLevitaId()).getEmail(), "youtube.com");
-        log.info("Password recovery email sent to user: {}", dto.getUsername());
     }
 
     public void remove(UUID id){
@@ -106,12 +97,10 @@ public class UserService {
             dto.setRole(roleService.getDefaultRole());
         else dto.setRole(roleService.findById(input.getRole()));
         dto.setPassword(crypt.encode(input.getPasscode()));
-        dto.setLevitaId(levitaService.findById(input.getLevitaId()).getId());
         return dto;
     }
 
     private void validate(UserInput input){
-
         if(!userRepository.existsByAccessCode(input.getAccessCode()))
             throw new RogueException("Código de acesso inválido.");
 

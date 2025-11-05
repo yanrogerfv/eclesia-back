@@ -22,11 +22,11 @@ public class UserDTO implements UserDetails {
     private String accessCode;
     private boolean active;
 
-    public void update(UserDTO userDTO) {
+    public UserDTO update(UserDTO userDTO) {
         this.role = userDTO.getRole();
         this.username = userDTO.getUsername();
         this.password = userDTO.getPassword();
-        this.levitaId = userDTO.getLevitaId();
+        return this;
     }
 
     public static UserEntity toEntity(UserDTO dto){

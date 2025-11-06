@@ -25,6 +25,12 @@ public class RoleService {
                 .orElseThrow(() -> new EntityNotFoundException("Role not found."));
     }
 
+    public RoleDTO getDefaultRole(){
+        RoleEntity entity = roleRepository.findByRole("Levita")
+                .orElseThrow(() -> new EntityNotFoundException("Default role not found."));
+        return RoleDTO.toDTO(entity);
+    }
+
     public RoleDTO create(RoleDTO dto){
         return RoleDTO.toDTO(roleRepository.save(RoleDTO.toEntity(dto)));
     }

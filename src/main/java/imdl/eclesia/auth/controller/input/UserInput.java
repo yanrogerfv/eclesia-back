@@ -6,9 +6,9 @@ import java.util.UUID;
 
 @Data
 public class UserInput {
-    private UUID id;
     private UUID role;
     private String username;
     private String passcode;
+    private String accessCode;
     private UUID levitaId;
 }

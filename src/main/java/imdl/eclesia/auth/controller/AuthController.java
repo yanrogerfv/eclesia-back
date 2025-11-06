@@ -2,6 +2,7 @@ package imdl.eclesia.auth.controller;
 
 import imdl.eclesia.auth.controller.input.UserInput;
 import imdl.eclesia.auth.controller.output.UserOutput;
+import imdl.eclesia.auth.dto.CreateUserOutput;
 import imdl.eclesia.auth.dto.RoleDTO;
 import imdl.eclesia.auth.service.RoleService;
 import imdl.eclesia.auth.service.UserService;
@@ -40,10 +41,16 @@ public class AuthController {
         return userService.activeUser();
     }
 
+    @GetMapping("/user/inactive")
+    @Operation(summary = "List of all inactive users.")
+    public List<UserOutput> listInactiveUsers(){
+        return userService.listAllNotActive();
+    }
+
     @PostMapping("/user")
     @Operation(summary = "Create a new user.")
-    public UserOutput createUser(@RequestBody UserInput input){
-        return userService.create(input);
+    public CreateUserOutput createUser(@RequestBody UUID levitaId){
+        return userService.createUserNotActive(levitaId);
     }
 
     @PatchMapping("/user/restore/{id}")
@@ -55,7 +62,7 @@ public class AuthController {
     @PutMapping("/user")
     @Operation(summary = "Update an user.")
     public UserOutput updateUser(@RequestBody UserInput input){
-        return userService.edit(input);
+        return userService.updateUser(input);
     }
 
     @DeleteMapping("/user/{id}")
@@ -100,13 +107,8 @@ public class AuthController {
         roleService.remove(id);
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return SecurityContextHolder.getContext().getAuthentication().toString();
-    }
-
     @GetMapping("/recover")
-    public void recover(String username) {
-        userService.forgotPasswordStep1(username);
+    public String getNewCodeForUser(UUID userId) {
+        return userService.generateNewAccessCode(userId);
     }
 }

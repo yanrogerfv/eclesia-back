@@ -15,7 +15,7 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:1004",
-            "https://eclesia.onrender.com", "https://eclesia-back.fly.dev",
+            "https://eclesia.onrender.com", "https://eclesia-back.fly.dev", "http://eclesia-back.fly.dev/",
                 "https://eclesia-dev.vercel.app", "https://eclesia.vercel.app/")); // URLs permitidas
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Métodos permitidos
         config.setAllowedHeaders(List.of("*"));

@@ -3,10 +3,12 @@ package imdl.eclesia.auth.controller;
 import imdl.eclesia.auth.configuration.AuthManager;
 import imdl.eclesia.auth.configuration.JwtUtil;
 import imdl.eclesia.auth.controller.input.LoginRequest;
+import imdl.eclesia.auth.controller.input.UserInput;
 import imdl.eclesia.auth.controller.output.LoginOutput;
 import imdl.eclesia.auth.controller.output.UserOutput;
 import imdl.eclesia.auth.service.UserService;
 import imdl.eclesia.domain.exception.RogueException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,6 +42,13 @@ public class LoginController {
         UserOutput user = userService.findByUsername(loginRequest.getUsername());
 
         return new LoginOutput(JwtUtil.generateToken(loginRequest.getUsername()), user);
+    }
+
+
+    @PutMapping("/update")
+    @Operation(summary = "Update an user.")
+    public UserOutput updateUser(@RequestBody UserInput input){
+        return userService.updateUser(input);
     }
 
     @GetMapping("/validate-token")

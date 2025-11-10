@@ -48,14 +48,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers(
                     "/auth/login",
-                    "/auth/register",
+                    "/auth/update",
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
-                    "/swagger-ui.html",
                     "/h2-console/**",
                     "/error",
                     "/auth/validate-token",

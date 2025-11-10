@@ -59,12 +59,6 @@ public class AuthController {
         userService.restore(id);
     }
 
-    @PutMapping("/user")
-    @Operation(summary = "Update an user.")
-    public UserOutput updateUser(@RequestBody UserInput input){
-        return userService.updateUser(input);
-    }
-
     @DeleteMapping("/user/{id}")
     @Operation(summary = "Remove an user.")
     public void deleteUser(@PathVariable UUID id){

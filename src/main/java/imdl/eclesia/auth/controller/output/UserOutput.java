@@ -12,4 +12,5 @@ public class UserOutput {
     private String username;
     private RoleDTO role;
     private Levita levita;
+    private String accessCode;
 }

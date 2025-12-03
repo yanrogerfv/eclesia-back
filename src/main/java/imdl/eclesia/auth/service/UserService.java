@@ -56,7 +56,7 @@ public class UserService {
 
         dto.setUsername(levita.getNome().trim().toLowerCase().replace(" ", "."));
         dto.setRole(roleService.getDefaultRole());
-        dto.setPassword(crypt.encode(dto.getPassword()));
+        dto.setPassword("crypt.encode(dto.getPassword())");
         dto.setLevitaId(levitaId);
 
         dto.setAccessCode(generateAccessCode());
@@ -87,6 +87,7 @@ public class UserService {
         output.setRole(dto.getRole());
         if(dto.getLevitaId() != null)
             output.setLevita(levitaService.findById(dto.getLevitaId()));
+        output.setAccessCode(dto.getAccessCode());
         return output;
     }
 

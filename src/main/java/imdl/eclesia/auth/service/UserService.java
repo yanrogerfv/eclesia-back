@@ -102,7 +102,7 @@ public class UserService {
         if (input.getRole() == null)
             dto.setRole(roleService.getDefaultRole());
         else dto.setRole(roleService.findById(input.getRole()));
-        dto.setPassword(crypt.encode(input.getPasscode()));
+        dto.setPassword(crypt.encode(input.getPassword()));
         return dto;
     }
 
@@ -114,7 +114,7 @@ public class UserService {
             throw new RogueException("Nome de usuário não deve estar vazio.");
         if(userRepository.existsByUsername(input.getUsername()))
             throw new RogueException("Já existe um cadastro com este nome de usuário.");
-        validatePassword(input.getPasscode());
+        validatePassword(input.getPassword());
     }
 
     private void validatePassword(String password){

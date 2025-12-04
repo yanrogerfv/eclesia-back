@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @CrossOrigin
@@ -49,8 +50,8 @@ public class AuthController {
 
     @PostMapping("/user")
     @Operation(summary = "Create a new user.")
-    public CreateUserOutput createUser(@RequestBody UUID levitaId){
-        return userService.createUserNotActive(levitaId);
+    public CreateUserOutput createUser(@RequestBody UserInput userInput){
+        return userService.createUserNotActive(userInput);
     }
 
     @PatchMapping("/user/restore/{id}")

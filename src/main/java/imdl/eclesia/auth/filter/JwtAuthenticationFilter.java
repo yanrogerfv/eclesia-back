@@ -25,9 +25,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    private final String[] PUBLIC_URLS = {
+            "/auth/login",
+            "/auth/register",
+            "/v3/api-docs/",
+            "/swagger-ui",
+            "/h2-console",
+            "/error",
+            "/v1/escalas/resumed"
+    };
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+        // Check if the request URL is public
+        for (String publicUrl : PUBLIC_URLS) {
+            if (request.getRequestURI().contains(publicUrl)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
         final String authToken = request.getHeader("Authorization");
 
         String username = null;

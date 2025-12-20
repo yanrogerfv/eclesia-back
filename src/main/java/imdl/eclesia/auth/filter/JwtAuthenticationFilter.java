@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/swagger-ui",
             "/h2-console",
             "/error",
-            "/v1/escalas/resumed"
+            "v1/escala/"
     };
 
     @Override
@@ -41,6 +41,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Check if the request URL is public
         for (String publicUrl : PUBLIC_URLS) {
+            if (request.getRequestURI().contains("v1/escala/") && request.getMethod().equals("DELETE")) {
+                break; // Skip allowing DELETE on /v1/escala/
+            }
             if (request.getRequestURI().contains(publicUrl)) {
                 filterChain.doFilter(request, response);
                 return;
@@ -49,12 +52,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authToken = request.getHeader("Authorization");
 
-        String username = null;
-
-        if (authToken != null) {
-            Claims claims = JwtUtil.validateToken(authToken);
-            username = claims.getSubject();
+        if (authToken == null || authToken.contains("undefined")) {
+            throw new ServletException("Missing or invalid Authorization header");
         }
+
+        Claims claims = JwtUtil.validateToken(authToken);
+        String username = claims.getSubject();
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);

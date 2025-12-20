@@ -22,4 +22,7 @@ public interface LevitaRepository extends JpaRepository<LevitaEntity, UUID> {
 
     @Query("SELECT l from LevitaResumedEntity l")
     List<LevitaResumedEntity> findAllResumed();
+
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UserEntity u WHERE u.levitaId = :levitaId")
+    boolean existsUserByLevitaId(UUID levitaId);
 }

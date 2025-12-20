@@ -109,10 +109,9 @@ public class UserService {
     private void validate(UserInput input){
         if(!userRepository.existsByAccessCode(input.getAccessCode()))
             throw new RogueException("Código de acesso inválido.");
-
         if(input.getUsername() == null || input.getUsername().isBlank())
             throw new RogueException("Nome de usuário não deve estar vazio.");
-        if(userRepository.existsByUsername(input.getUsername()))
+        if(userRepository.existsByUsernameWithDifferentCode(input.getUsername(), input.getAccessCode()))
             throw new RogueException("Já existe um cadastro com este nome de usuário.");
         validatePassword(input.getPassword());
     }

@@ -37,6 +37,24 @@ public interface EscalaRepository extends JpaRepository<EscalaEntity, UUID> {
     @Query("SELECT e.musicas FROM EscalaEntity e WHERE e.id = :escalaId")
     List<MusicaEntity> findAllMusicasInEscala(UUID escalaId);
 
-    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM EscalaEntity e WHERE e.ministro.id = :levitaId")
+    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM EscalaEntity e WHERE " +
+            "e.ministro.id = :levitaId OR " +
+            "e.baixo.id = :levitaId OR " +
+            "e.bateria.id = :levitaId OR " +
+            "e.guitarra.id = :levitaId OR " +
+            "e.teclado.id = :levitaId OR " +
+            "e.violao.id = :levitaId OR " +
+            ":levitaId IN (SELECT b.id FROM e.back b)")
     boolean existsByLevita(UUID levitaId);
+
+    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM EscalaEntity e WHERE e.data IN :dates AND (" +
+            "e.ministro.id = :levitaId OR " +
+            "e.baixo.id = :levitaId OR " +
+            "e.bateria.id = :levitaId OR " +
+            "e.guitarra.id = :levitaId OR " +
+            "e.teclado.id = :levitaId OR " +
+            "e.violao.id = :levitaId OR " +
+            ":levitaId IN (SELECT b.id FROM e.back b)" +
+            ")")
+    boolean existsByLevitaInDates(UUID levitaId, List<LocalDate> dates);
 }

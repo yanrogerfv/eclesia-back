@@ -8,7 +8,7 @@ import java.util.UUID;
 public class UserInput {
     private UUID role;
     private String username;
-    private String passcode;
+    private String password;
     private String accessCode;
     private UUID levitaId;
 }

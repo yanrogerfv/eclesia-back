@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,19 +46,23 @@ public class UserService {
         return userRepository.findAllByActiveFalse().stream().map(UserDTO::toDTO).map(this::dtoToOutput).toList();
     }
 
-    public CreateUserOutput createUserNotActive(UUID levitaId){
+    public CreateUserOutput createUserNotActive(UserInput input){
         UserDTO dto = new UserDTO();
 
-        if (levitaId == null || levitaId.toString().isBlank())
+        if (input.getLevitaId() == null || input.getLevitaId().toString().isBlank())
             throw new RogueException("Levita não pode ser vazio.");
-        if (userRepository.existsByLevitaId(levitaId))
+        if (userRepository.existsByLevitaId(input.getLevitaId()))
             throw new RogueException("Já existe um cadastro para este Levita.");
-        Levita levita = levitaService.findById(levitaId);
+        Levita levita = levitaService.findById(input.getLevitaId());
 
         dto.setUsername(levita.getNome().trim().toLowerCase().replace(" ", "."));
-        dto.setRole(roleService.getDefaultRole());
-        dto.setPassword(crypt.encode(dto.getPassword()));
-        dto.setLevitaId(levitaId);
+        if (input.getRole() == null)
+            dto.setRole(roleService.getDefaultRole());
+        else dto.setRole(roleService.findById(input.getRole()));
+        SecureRandom secureRandom = new SecureRandom();
+        String randomPasscode = String.format("%08d", secureRandom.nextInt(100_000_000));
+        dto.setPassword(crypt.encode(randomPasscode));
+        dto.setLevitaId(input.getLevitaId());
 
         dto.setAccessCode(generateAccessCode());
         dto.setActive(false);
@@ -87,6 +92,7 @@ public class UserService {
         output.setRole(dto.getRole());
         if(dto.getLevitaId() != null)
             output.setLevita(levitaService.findById(dto.getLevitaId()));
+        output.setAccessCode(dto.getAccessCode());
         return output;
     }
 
@@ -96,19 +102,18 @@ public class UserService {
         if (input.getRole() == null)
             dto.setRole(roleService.getDefaultRole());
         else dto.setRole(roleService.findById(input.getRole()));
-        dto.setPassword(crypt.encode(input.getPasscode()));
+        dto.setPassword(crypt.encode(input.getPassword()));
         return dto;
     }
 
     private void validate(UserInput input){
         if(!userRepository.existsByAccessCode(input.getAccessCode()))
             throw new RogueException("Código de acesso inválido.");
-
         if(input.getUsername() == null || input.getUsername().isBlank())
             throw new RogueException("Nome de usuário não deve estar vazio.");
-        if(userRepository.existsByUsername(input.getUsername()))
+        if(userRepository.existsByUsernameWithDifferentCode(input.getUsername(), input.getAccessCode()))
             throw new RogueException("Já existe um cadastro com este nome de usuário.");
-        validatePassword(input.getPasscode());
+        validatePassword(input.getPassword());
     }
 
     private void validatePassword(String password){

@@ -1,12 +1,10 @@
 package imdl.eclesia.service;
 
-import imdl.eclesia.domain.EscalaResumed;
+import imdl.eclesia.domain.*;
 import imdl.eclesia.domain.exception.EntityNotFoundException;
-import imdl.eclesia.domain.Escala;
-import imdl.eclesia.domain.Levita;
-import imdl.eclesia.domain.Musica;
 import imdl.eclesia.domain.exception.RogueException;
 import imdl.eclesia.domain.input.EscalaInput;
+import imdl.eclesia.persistence.EscalaLogRepository;
 import imdl.eclesia.persistence.EscalaRepository;
 import imdl.eclesia.service.mapper.EscalaMapper;
 import imdl.eclesia.service.mapper.MusicaMapper;
@@ -15,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -25,11 +26,14 @@ import java.util.function.Consumer;
 @Slf4j
 public class EscalaService {
 
+    private final EscalaLogRepository escalaLogRepository;
     private final EscalaRepository escalaRepository;
     private final LevitaService levitaService;
     private final MusicaService musicaService;
+    private final ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
-    public EscalaService(EscalaRepository escalaRepository, LevitaService levitaService, MusicaService musicaService) {
+    public EscalaService(EscalaLogRepository escalaLogRepository, EscalaRepository escalaRepository, LevitaService levitaService, MusicaService musicaService) {
+        this.escalaLogRepository = escalaLogRepository;
         this.escalaRepository = escalaRepository;
         this.levitaService = levitaService;
         this.musicaService = musicaService;
@@ -41,10 +45,6 @@ public class EscalaService {
 
     public List<Escala> findMonthEscalas(int month){
         return escalaRepository.findAllInMonth(month).stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
-    }
-
-    public List<Escala> findNextEscalas() {
-        return escalaRepository.findNext(LocalDate.now(), LocalDate.now().plusDays(31)).stream().map(EscalaMapper::entityToDomain).sorted(Comparator.comparing(Escala::getData)).toList();
     }
 
     public List<EscalaResumed> findNextEscalasResumidas() {
@@ -63,8 +63,11 @@ public class EscalaService {
     public Escala create(EscalaInput input){
         validateInput(input);
         Escala escala = inputToDomain(input);
-        log.info("{} criando escala de {}", SecurityContextHolder.getContext().getAuthentication().getName(), escala.getData());
-        return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
+        escala.setCreatedAt(LocalDateTime.now(zoneId));
+        escala.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        Escala created = EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
+        logEscalaChange(LogAction.CRIAR_ESCALA, created);
+        return created;
     }
 
     public Escala update(EscalaInput input){
@@ -73,16 +76,17 @@ public class EscalaService {
         Escala escala = inputToDomain(input);
 
         old.update(escala);
-        log.info("{} atualizando escala de {}", SecurityContextHolder.getContext().getAuthentication().getName(), old.getData());
+        old.setUpdatedAt(LocalDateTime.now(zoneId));
+        old.setUpdatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        logEscalaChange(LogAction.ATUALIZAR_ESCALA, old);
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(old)));
     }
 
     public void deleteEscala(UUID id){
         Escala escala = findById(id);
-        log.info("{} removendo escala de {}", SecurityContextHolder.getContext().getAuthentication().getName(), escala.getData());
+        logEscalaChange(LogAction.EXCLUIR_ESCALA, escala);
         escalaRepository.delete(escalaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
-
     }
 
     public List<Musica> findMusicasInEscala(UUID escalaId){
@@ -97,7 +101,7 @@ public class EscalaService {
         if(!(musicasIds == null || musicasIds.isEmpty()))
             musicasIds.forEach(id -> musicas.add(musicaService.findById(id)));
         escala.setMusicas(musicas);
-        log.info("{} definindo músicas na escala de {}", SecurityContextHolder.getContext().getAuthentication().getName(), escala.getData());
+        logEscalaChange(LogAction.DEFINIR_MUSICAS, escala);
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
 
@@ -192,9 +196,22 @@ public class EscalaService {
         log.info("Usuário {} iniciando limpeza de escalas antigas...", SecurityContextHolder.getContext().getAuthentication().getName());
         List<Escala> escalas = escalaRepository.findAll().stream().map(EscalaMapper::entityToDomain).toList();
         for (Escala escala : escalas) {
-            if (escala.getData().isBefore(LocalDate.now().minusDays(15)))
+            if (escala.getData().isBefore(LocalDate.now(zoneId).minusDays(15)))
                 escalaRepository.deleteById(escala.getId());
         }
+    }
+
+    private void logEscalaChange(LogAction action, Escala escala) {
+        String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("{} {} escala de {}", user, action.getAcao(), escala.getData());
+        EscalaLog logEntry = new EscalaLog();
+        logEntry.setEscalaId(escala.getId());
+        logEntry.setDescription(String.format(
+                "%s %s %s do dia %s às %s.", user, action.getAcao(), escala.getTitulo(),
+                escala.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                LocalDateTime.now(zoneId).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+        ));
+        escalaLogRepository.save(EscalaMapper.domainToLogEntity(logEntry));
     }
 
 }

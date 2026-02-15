@@ -1,21 +1,15 @@
 package imdl.eclesia.domain.exception;
 
-import java.util.Collections;
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class ApiError {
 
     private final List<String> error;
 
     public ApiError(String messageErrors) {
-        this.error = Collections.singletonList(messageErrors);
-    }
-
-    public ApiError(List<String> errors) {
-        this.error = errors;
-    }
-
-    public List<String> getError() {
-        return error;
+        this.error = List.of(messageErrors);
     }
 }

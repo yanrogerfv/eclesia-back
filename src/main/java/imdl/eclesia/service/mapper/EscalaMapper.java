@@ -1,8 +1,10 @@
 package imdl.eclesia.service.mapper;
 
 import imdl.eclesia.domain.Escala;
+import imdl.eclesia.domain.EscalaLog;
 import imdl.eclesia.domain.EscalaResumed;
 import imdl.eclesia.entity.EscalaEntity;
+import imdl.eclesia.entity.EscalaLogEntity;
 import imdl.eclesia.entity.EscalaResumedEntity;
 
 public class EscalaMapper {
@@ -46,6 +48,15 @@ public class EscalaMapper {
             domain.setMusicas(entity.getMusicas().stream().map(MusicaMapper::entityToDomain).toList());
         if (entity.getObservacoes() != null)
             domain.setObservacoes(entity.getObservacoes());
+
+        if (entity.getCreatedAt() != null) {
+            domain.setCreatedAt(entity.getCreatedAt());
+            domain.setCreatedBy(entity.getCreatedBy());
+        }
+        if (entity.getUpdatedAt() != null) {
+            domain.setUpdatedAt(entity.getUpdatedAt());
+            domain.setUpdatedBy(entity.getUpdatedBy());
+        }
         return domain;
     }
 
@@ -113,6 +124,20 @@ public class EscalaMapper {
             entity.setMusicas(domain.getMusicas().stream().map(MusicaMapper::domainToEntity).toList());
         if (domain.getObservacoes() != null)
             entity.setObservacoes(domain.getObservacoes());
+
+        entity.setCreatedAt(domain.getCreatedAt());
+        entity.setCreatedBy(domain.getCreatedBy());
+        if (domain.getUpdatedAt() != null) {
+            entity.setUpdatedAt(domain.getUpdatedAt());
+            entity.setUpdatedBy(domain.getUpdatedBy());
+        }
         return entity;
+    }
+
+    public static EscalaLogEntity domainToLogEntity(EscalaLog log) {
+        EscalaLogEntity logEntity = new EscalaLogEntity();
+        logEntity.setEscalaId(log.getEscalaId());
+        logEntity.setDescription(log.getDescription());
+        return logEntity;
     }
 }

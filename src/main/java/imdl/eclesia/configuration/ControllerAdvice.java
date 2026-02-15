@@ -1,8 +1,6 @@
 package imdl.eclesia.configuration;
 
-import imdl.eclesia.domain.exception.ApiError;
-import imdl.eclesia.domain.exception.EntityNotFoundException;
-import imdl.eclesia.domain.exception.RogueException;
+import imdl.eclesia.domain.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,7 +18,21 @@ public class ControllerAdvice {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleApiError(EntityNotFoundException exception){
+    public ApiError handleEntityNotFoundException(EntityNotFoundException exception){
+        String message = exception.getMessage();
+        return new ApiError(message);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleApiError(UnauthorizedException exception){
+        String message = exception.getMessage();
+        return new ApiError(message);
+    }
+
+    @ExceptionHandler(PermissionException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiError handleApiError(PermissionException exception) {
         String message = exception.getMessage();
         return new ApiError(message);
     }

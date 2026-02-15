@@ -19,6 +19,7 @@ public class CorsConfig {
                 "https://eclesia-dev.vercel.app", "https://eclesia.vercel.app/")); // URLs permitidas
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Métodos permitidos
         config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("X-Refreshed-Token")); // Allow frontend to read the refreshed token
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

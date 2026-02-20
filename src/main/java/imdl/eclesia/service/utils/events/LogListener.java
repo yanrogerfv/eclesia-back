@@ -16,13 +16,20 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class LogListener {
+
+    {
+        log.info("LogListener initialized and ready to capture events.");
+    }
 
     private final LogRepository logRepository;
     private final ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public LogListener(LogRepository logRepository) {
         this.logRepository = logRepository;

@@ -1,15 +1,17 @@
 package imdl.eclesia.service;
 
 import imdl.eclesia.domain.*;
+import imdl.eclesia.domain.event.EscalaEvent;
 import imdl.eclesia.domain.exception.EntityNotFoundException;
 import imdl.eclesia.domain.exception.RogueException;
 import imdl.eclesia.domain.input.EscalaInput;
-import imdl.eclesia.persistence.EscalaLogRepository;
 import imdl.eclesia.persistence.EscalaRepository;
 import imdl.eclesia.service.mapper.EscalaMapper;
 import imdl.eclesia.service.mapper.MusicaMapper;
+import imdl.eclesia.service.utils.events.LogAction;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
@@ -26,17 +28,17 @@ import java.util.function.Consumer;
 @Slf4j
 public class EscalaService {
 
-    private final EscalaLogRepository escalaLogRepository;
     private final EscalaRepository escalaRepository;
     private final LevitaService levitaService;
     private final MusicaService musicaService;
+    private final ApplicationEventPublisher eventPublisher;
     private final ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
-    public EscalaService(EscalaLogRepository escalaLogRepository, EscalaRepository escalaRepository, LevitaService levitaService, MusicaService musicaService) {
-        this.escalaLogRepository = escalaLogRepository;
+    public EscalaService(EscalaRepository escalaRepository, LevitaService levitaService, MusicaService musicaService, ApplicationEventPublisher eventPublisher) {
         this.escalaRepository = escalaRepository;
         this.levitaService = levitaService;
         this.musicaService = musicaService;
+        this.eventPublisher = eventPublisher;
     }
 
     public List<Escala> findAllEscalas(UUID levita){
@@ -66,7 +68,7 @@ public class EscalaService {
         escala.setCreatedAt(LocalDateTime.now(zoneId));
         escala.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
         Escala created = EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
-        logEscalaChange(LogAction.CRIAR_ESCALA, created);
+        publishEscalaEvent(LogAction.CRIAR_ESCALA, created);
         return created;
     }
 
@@ -78,13 +80,13 @@ public class EscalaService {
         old.update(escala);
         old.setUpdatedAt(LocalDateTime.now(zoneId));
         old.setUpdatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-        logEscalaChange(LogAction.ATUALIZAR_ESCALA, old);
+        publishEscalaEvent(LogAction.ATUALIZAR_ESCALA, old);
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(old)));
     }
 
     public void deleteEscala(UUID id){
         Escala escala = findById(id);
-        logEscalaChange(LogAction.EXCLUIR_ESCALA, escala);
+        publishEscalaEvent(LogAction.EXCLUIR_ESCALA, escala);
         escalaRepository.delete(escalaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Escala não encontrada.")));
     }
@@ -101,7 +103,7 @@ public class EscalaService {
         if(!(musicasIds == null || musicasIds.isEmpty()))
             musicasIds.forEach(id -> musicas.add(musicaService.findById(id)));
         escala.setMusicas(musicas);
-        logEscalaChange(LogAction.DEFINIR_MUSICAS, escala);
+        publishEscalaEvent(LogAction.DEFINIR_MUSICAS, escala);
         return EscalaMapper.entityToDomain(escalaRepository.save(EscalaMapper.domainToEntity(escala)));
     }
 
@@ -201,17 +203,10 @@ public class EscalaService {
         }
     }
 
-    private void logEscalaChange(LogAction action, Escala escala) {
+    private void publishEscalaEvent(LogAction action, Escala escala) {
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("{} {} escala de {}", user, action.getAcao(), escala.getData());
-        EscalaLog logEntry = new EscalaLog();
-        logEntry.setEscalaId(escala.getId());
-        logEntry.setDescription(String.format(
-                "%s %s %s do dia %s às %s.", user, action.getAcao(), escala.getTitulo(),
-                escala.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                LocalDateTime.now(zoneId).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-        ));
-        escalaLogRepository.save(EscalaMapper.domainToLogEntity(logEntry));
+        eventPublisher.publishEvent(new EscalaEvent(escala, action, user));
     }
 
 }

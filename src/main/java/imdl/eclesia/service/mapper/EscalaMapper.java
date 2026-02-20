@@ -1,10 +1,8 @@
 package imdl.eclesia.service.mapper;
 
 import imdl.eclesia.domain.Escala;
-import imdl.eclesia.domain.EscalaLog;
 import imdl.eclesia.domain.EscalaResumed;
 import imdl.eclesia.entity.EscalaEntity;
-import imdl.eclesia.entity.EscalaLogEntity;
 import imdl.eclesia.entity.EscalaResumedEntity;
 
 public class EscalaMapper {
@@ -132,12 +130,5 @@ public class EscalaMapper {
             entity.setUpdatedBy(domain.getUpdatedBy());
         }
         return entity;
-    }
-
-    public static EscalaLogEntity domainToLogEntity(EscalaLog log) {
-        EscalaLogEntity logEntity = new EscalaLogEntity();
-        logEntity.setEscalaId(log.getEscalaId());
-        logEntity.setDescription(log.getDescription());
-        return logEntity;
     }
 }

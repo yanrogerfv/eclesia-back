@@ -123,8 +123,10 @@ public class EscalaMapper {
         if (domain.getObservacoes() != null)
             entity.setObservacoes(domain.getObservacoes());
 
-        entity.setCreatedAt(domain.getCreatedAt());
-        entity.setCreatedBy(domain.getCreatedBy());
+        if (domain.getCreatedAt() != null) {
+            entity.setCreatedAt(domain.getCreatedAt());
+            entity.setCreatedBy(domain.getCreatedBy());
+        }
         if (domain.getUpdatedAt() != null) {
             entity.setUpdatedAt(domain.getUpdatedAt());
             entity.setUpdatedBy(domain.getUpdatedBy());

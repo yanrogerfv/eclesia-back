@@ -5,11 +5,15 @@ import imdl.eclesia.domain.LevitaResumed;
 import imdl.eclesia.domain.exception.EntityNotFoundException;
 import imdl.eclesia.domain.Instrumento;
 import imdl.eclesia.domain.Levita;
+import imdl.eclesia.service.utils.events.LogAction;
+import imdl.eclesia.domain.event.LevitaEvent;
 import imdl.eclesia.domain.exception.RogueException;
 import imdl.eclesia.domain.input.LevitaInput;
 import imdl.eclesia.persistence.EscalaRepository;
 import imdl.eclesia.persistence.LevitaRepository;
 import imdl.eclesia.service.mapper.LevitaMapper;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -22,10 +26,13 @@ public class LevitaService {
 
     private final EscalaRepository escalaService;
 
-    public LevitaService(LevitaRepository levitaRepository, InstrumentoService instrumentoService, EscalaRepository escalaService) {
+    private final ApplicationEventPublisher eventPublisher;
+
+    public LevitaService(LevitaRepository levitaRepository, InstrumentoService instrumentoService, EscalaRepository escalaService, ApplicationEventPublisher eventPublisher) {
         this.levitaRepository = levitaRepository;
         this.instrumentoService = instrumentoService;
         this.escalaService = escalaService;
+        this.eventPublisher = eventPublisher;
     }
 
     public List<Levita> findAll(LevitaFilter filter) {
@@ -66,7 +73,9 @@ public class LevitaService {
         validateInput(input);
         Levita levita = inputToDomain(input);
         levita.setAgenda(new ArrayList<>());
-        return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        Levita created = LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        publishLevitaEvent(LogAction.CRIAR_LEVITA, created);
+        return created;
     }
 
     public Levita update(LevitaInput input) {
@@ -84,7 +93,9 @@ public class LevitaService {
             levita.setEmail(input.getEmail());
         if (input.getDescricao() != null)
             levita.setDescricao(input.getDescricao());
-        return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        Levita updated = LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        publishLevitaEvent(LogAction.ATUALIZAR_LEVITA, updated);
+        return updated;
     }
 
     public void deleteLevita(UUID id) {
@@ -92,8 +103,10 @@ public class LevitaService {
             throw new RogueException("Levita não pode ser removido pois já se encontra em uma escala.");
         if (levitaRepository.existsUserByLevitaId(id))
             throw new RogueException("Levita não pode ser removido pois já possui um usuário associado.");
-        levitaRepository.delete(levitaRepository.findById(id)
+        Levita levita = LevitaMapper.entityToDomain(levitaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Levita não encontrada.")));
+        publishLevitaEvent(LogAction.EXCLUIR_LEVITA, levita);
+        levitaRepository.delete(LevitaMapper.domainToEntity(levita));
     }
 
     public Levita addInstrumento(UUID id, Long codInstrumento) { // TODO FIX
@@ -111,7 +124,9 @@ public class LevitaService {
                 newInstrumentos.add(value);
         }
         levita.setInstrumentos(newInstrumentos);
-        return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        Levita updated = LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        publishLevitaEvent(LogAction.ADICIONAR_INSTRUMENTO, updated);
+        return updated;
     }
 
     public Levita removeInstrumento(UUID id, Long instrumento) {
@@ -128,7 +143,9 @@ public class LevitaService {
         });
 
         levita.setInstrumentos(newInstrumentos);
-        return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        Levita updated = LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        publishLevitaEvent(LogAction.REMOVER_INSTRUMENTO, updated);
+        return updated;
     }
 
     public List<LocalDate> getLevitaAgenda(UUID id) {
@@ -155,7 +172,9 @@ public class LevitaService {
         if (escalaService.existsByLevitaInDates(id, dates))
             throw new RogueException("Levita está em uma escala em uma das datas selecionadas.");
         levita.setAgenda(dates);
-        return LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        Levita updated = LevitaMapper.entityToDomain(levitaRepository.save(LevitaMapper.domainToEntity(levita)));
+        publishLevitaEvent(LogAction.DEFINIR_AGENDA, updated);
+        return updated;
     }
 
     private void validateInput(LevitaInput input) {
@@ -178,5 +197,10 @@ public class LevitaService {
         levita.setEmail(input.getEmail());
         levita.setDescricao(input.getDescricao());
         return levita;
+    }
+
+    private void publishLevitaEvent(LogAction action, Levita levita) {
+        String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        eventPublisher.publishEvent(new LevitaEvent(levita, action, user));
     }
 }

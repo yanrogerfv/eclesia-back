@@ -38,7 +38,6 @@ public class LoginController {
                         loginRequest.getUsername(),
                         loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         UserOutput user = userService.findByUsername(loginRequest.getUsername());
 
         return new LoginOutput(JwtUtil.generateToken(loginRequest.getUsername()), user);

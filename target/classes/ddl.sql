@@ -1,4 +1,5 @@
 DROP TABLE if exists escala;
+DROP TABLE if exists log;
 DROP TABLE if exists levita;
 DROP TABLE if exists instrumentos;
 DROP TABLE if exists musica;
@@ -47,4 +48,14 @@ CREATE TABLE musica
     nome        text not null,
     link        text,
     cifra       text
+);
+
+CREATE TABLE log
+(
+    log_id         uuid primary key default gen_random_uuid(),
+    referencia_id  uuid,
+    tipo_log       text not null,
+    action         text,
+    description    text,
+    object         jsonb
 );

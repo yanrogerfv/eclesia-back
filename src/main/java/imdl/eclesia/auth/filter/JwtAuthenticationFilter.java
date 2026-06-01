@@ -28,39 +28,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
-    private final String[] PUBLIC_URLS = {
-            "/auth/login",
-            "/auth/register",
-            "/auth/update",
-            "/v3/api-docs/",
-            "/swagger-ui",
-            "/h2-console",
-            "/error",
-            "v1/escala/"
-    };
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         try {
-            // Check if the request URL is public
-            for (String publicUrl : PUBLIC_URLS) {
-                if (request.getRequestURI().contains("v1/escala/") && request.getMethod().equals("DELETE")) {
-                    break; // Skip allowing DELETE on /v1/escala/
-                }
-                if (request.getRequestURI().contains(publicUrl)) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-            }
+            final String authHeader = request.getHeader("Authorization");
 
-            final String authToken = request.getHeader("Authorization");
-
-            if (authToken == null || authToken.contains("undefined")) {
-                sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header");
+            if (authHeader == null || !authHeader.startsWith("Bearer ") || authHeader.contains("undefined")) {
+                filterChain.doFilter(request, response);
                 return;
             }
+
+            final String authToken = authHeader.substring(7);
 
             Claims claims = JwtUtil.validateToken(authToken);
             String username = claims.getSubject();
@@ -68,17 +48,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-                if (JwtUtil.validateToken(authToken) != null) {
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken
-                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                usernamePasswordAuthenticationToken
+                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-                    // Refresh token with new expiration time
-                    String refreshedToken = JwtUtil.refreshToken(username);
-                    response.setHeader("X-Refreshed-Token", refreshedToken);
-                }
+                // Refresh token with new expiration time
+                String refreshedToken = JwtUtil.refreshToken(username);
+                response.setHeader("X-Refreshed-Token", refreshedToken);
             }
 
             filterChain.doFilter(request, response);

@@ -10,6 +10,7 @@ import imdl.eclesia.domain.Levita;
 import imdl.eclesia.domain.LevitaResumed;
 import imdl.eclesia.domain.exception.EntityNotFoundException;
 import imdl.eclesia.domain.exception.RogueException;
+import imdl.eclesia.domain.exception.UnauthorizedException;
 import imdl.eclesia.service.LevitaService;
 import imdl.eclesia.service.utils.mail.AppMailSender;
 import lombok.extern.slf4j.Slf4j;
@@ -76,9 +77,42 @@ public class UserService {
         UserDTO dto = userRepository.findByAccessCode(input.getAccessCode()).map(UserDTO::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with access code"));
         validate(input);
-        UserDTO update = inputToDTO(input);
-        dto.update(update);
+        
+        dto.setUsername(input.getUsername());
+        dto.setPassword(crypt.encode(input.getPassword()));
+        dto.setActive(true);
+
         return dtoToOutput(UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto))));
+    }
+
+    public UserOutput updateProfile(UUID id, UserInput input) {
+        UserDTO dto = userRepository.findById(id).map(UserDTO::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        
+        if(input.getUsername() != null && !input.getUsername().isBlank() && !dto.getUsername().equals(input.getUsername())){
+            if(userRepository.existsByUsernameWithDifferentCode(input.getUsername(), dto.getAccessCode()))
+                throw new RogueException("Já existe um cadastro com este nome de usuário.");
+            dto.setUsername(input.getUsername());
+        }
+        
+        if (input.getPassword() != null && !input.getPassword().isBlank()) {
+            validatePassword(input.getPassword());
+            dto.setPassword(crypt.encode(input.getPassword()));
+        }
+        
+        if (input.getRole() != null) {
+            dto.setRole(roleService.findById(input.getRole()));
+        }
+        
+        return dtoToOutput(UserDTO.toDTO(userRepository.save(UserDTO.toEntity(dto))));
+    }
+
+    public void deactivate(UUID id) {
+        UserDTO dto = userRepository.findById(id).map(UserDTO::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        dto.setActive(false);
+        userRepository.save(UserDTO.toEntity(dto));
+        log.info("User {} deactivated.", dto.getUsername());
     }
 
     public void remove(UUID id){
@@ -126,6 +160,9 @@ public class UserService {
     public boolean validateLogin(LoginRequest loginRequest) {
         UserDTO dto = userRepository.findByUsername(loginRequest.getUsername()).map(UserDTO::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        if (!dto.isActive()) {
+            throw new UnauthorizedException("Usuário desativado.");
+        }
         return crypt.matches(loginRequest.getPassword(), dto.getPassword());
     }
 

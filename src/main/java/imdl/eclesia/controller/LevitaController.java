@@ -13,6 +13,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import imdl.eclesia.auth.controller.output.UserOutput;
+import imdl.eclesia.auth.service.UserService;
+import imdl.eclesia.domain.exception.UnauthorizedException;
+import imdl.eclesia.service.AppService;
+
 @CrossOrigin
 @RestController
 @RequestMapping("v1/levita")
@@ -20,9 +25,21 @@ import java.util.UUID;
 public class  LevitaController {
 
     private final LevitaService levitaService;
+    private final AppService appService;
+    private final UserService userService;
 
-    public LevitaController(LevitaService levitaService) {
+    public LevitaController(LevitaService levitaService, AppService appService, UserService userService) {
         this.levitaService = levitaService;
+        this.appService = appService;
+        this.userService = userService;
+    }
+
+    private void checkAgendaAccess(UUID levitaId) {
+        if (appService.isAdminOrLider()) return;
+        UserOutput activeUser = userService.activeUser();
+        if (activeUser.getLevita() == null || !activeUser.getLevita().getId().equals(levitaId)) {
+            throw new UnauthorizedException("Você não tem permissão para alterar a agenda de outro levita.");
+        }
     }
 
     @GetMapping
@@ -52,24 +69,28 @@ public class  LevitaController {
     @PostMapping
     @Operation(summary = "Adiciona um novo levita ao banco.")
     public Levita addLevita(@RequestBody LevitaInput input){
+        if (!appService.isAdminOrLider()) throw new UnauthorizedException("Apenas administradores e líderes podem adicionar levitas.");
         return levitaService.create(input);
     }
 
     @PutMapping
     @Operation(summary = "Atualiza as informaçoes de um levita pelo seu ID.")
     public Levita updateLevita(@RequestBody LevitaInput input){
+        if (!appService.isAdminOrLider()) throw new UnauthorizedException("Apenas administradores e líderes podem editar levitas.");
         return levitaService.update(input);
     }
 
     @PatchMapping("/add-instrumento/{id}")
     @Operation(summary = "Adicionar um instrumento à um Levita.")
     public Levita addInstrumento(@PathVariable UUID id, Long inst){
+        if (!appService.isAdminOrLider()) throw new UnauthorizedException("Apenas administradores e líderes podem editar os instrumentos de um levita.");
         return levitaService.addInstrumento(id, inst);
     }
 
     @PatchMapping("/remove-instrumento/{id}")
     @Operation(summary = "Remove um instrumento de um Levita.")
     public Levita removeInstrumento(@PathVariable UUID id, Long inst){
+        if (!appService.isAdminOrLider()) throw new UnauthorizedException("Apenas administradores e líderes podem editar os instrumentos de um levita.");
         return levitaService.removeInstrumento(id, inst);
     }
 
@@ -88,18 +109,21 @@ public class  LevitaController {
     @PostMapping("/agenda/{id}")
     @Operation(summary = "Adiciona uma lista de datas à agenda de um Levita.")
     public Levita setLevitaAgenda(@PathVariable UUID id, @RequestBody List<LocalDate> dates){
+        checkAgendaAccess(id);
         return levitaService.setLevitaAgenda(id, dates);
     }
 
     @PutMapping("/agenda/{id}")
     @Operation(summary = "Atualiza a agenda de um Levita.")
     public Levita changeDisponivel(@PathVariable UUID id){
+        checkAgendaAccess(id);
         return levitaService.updateAgentaFromALevita(id);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar um levita.")
     public void deleteLevita(@PathVariable UUID id){
+        if (!appService.isAdminOrLider()) throw new UnauthorizedException("Apenas administradores e líderes podem remover levitas.");
         levitaService.deleteLevita(id);
     }
 }

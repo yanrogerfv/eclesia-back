@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import imdl.eclesia.service.AppService;
+
 @CrossOrigin
 @RestController
 @RequestMapping("v1/escala")
@@ -22,9 +24,11 @@ import java.util.UUID;
 public class EscalaController {
 
     private final EscalaService escalaService;
+    private final AppService appService;
 
-    public EscalaController(EscalaService escalaService) {
+    public EscalaController(EscalaService escalaService, AppService appService) {
         this.escalaService = escalaService;
+        this.appService = appService;
     }
 
     @GetMapping
@@ -60,8 +64,7 @@ public class EscalaController {
     @PostMapping
     @Operation(summary = "Criar uma nova escala.")
     public Escala createEscala(@RequestBody EscalaInput input){
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-                .stream().noneMatch(a -> a.getAuthority().equals("ADMIN") || a.getAuthority().equals("Líder")))
+        if (!appService.isAdminOrLider())
             throw new PermissionException("Usuário não possui permissão para criar uma escala.");
         return escalaService.create(input);
     }
@@ -69,8 +72,7 @@ public class EscalaController {
     @PutMapping
     @Operation(summary = "Atualiza uma escala.")
     public Escala updateEscala(@RequestBody EscalaInput input){
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-                .stream().noneMatch(a -> a.getAuthority().equals("ADMIN") || a.getAuthority().equals("Líder")))
+        if (!appService.isAdminOrLider())
             throw new PermissionException("Usuário não possui permissão para editar uma escala.");
         return escalaService.update(input);
     }
@@ -78,8 +80,7 @@ public class EscalaController {
     @DeleteMapping("/{escalaId}")
     @Operation(summary = "Deletar uma escala.")
     public void deleteEscala(@PathVariable UUID escalaId){
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-                .stream().noneMatch(a -> a.getAuthority().equals("ADMIN") || a.getAuthority().equals("Líder")))
+        if (!appService.isAdminOrLider())
             throw new PermissionException("Usuário não possui permissão para deletar uma escala.");
         escalaService.deleteEscala(escalaId);
     }
@@ -87,6 +88,8 @@ public class EscalaController {
     @DeleteMapping("/clean")
     @Operation(summary = "Deletar escalas antigas.")
     public void cleanEscalas(){
+        if (!appService.isAdmin())
+            throw new PermissionException("Usuário não possui permissão para limpar escalas.");
         escalaService.cleanEscalas();
     }
 
@@ -100,12 +103,16 @@ public class EscalaController {
     @PutMapping("/musicas/{escalaId}")
     @Operation(summary = "Adiciona uma música na escala.")
     public Escala addMusicaInEscala(@PathVariable UUID escalaId, @RequestBody MusicasIdsInput musicasIds){
+        if (!appService.isAdminOrLider())
+            throw new PermissionException("Usuário não possui permissão para alterar músicas da escala.");
         return escalaService.setMusicasInEscala(escalaId, musicasIds.getMusicasIds());
     }
 
     @DeleteMapping("/musicas/{escalaId}")
     @Operation(summary = "Remove uma música na escala.")
     public Escala removeMusicaInEscala(@PathVariable UUID escalaId, @RequestParam UUID musicaId){
+        if (!appService.isAdminOrLider())
+            throw new PermissionException("Usuário não possui permissão para alterar músicas da escala.");
         return escalaService.removeMusicaInEscala(escalaId, musicaId);
     }
 }

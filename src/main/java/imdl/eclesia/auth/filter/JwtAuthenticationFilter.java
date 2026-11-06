@@ -55,12 +55,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
 
-            final String authToken = request.getHeader("Authorization");
+            final String authHeader = request.getHeader("Authorization");
 
-            if (authToken == null || authToken.contains("undefined")) {
+            if (authHeader == null || authHeader.contains("undefined")) {
                 sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid Authorization header");
                 return;
             }
+
+            // The frontend sends "Bearer <token>"; older clients send the raw token, so both are accepted.
+            final String authToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
 
             Claims claims = JwtUtil.validateToken(authToken);
             String username = claims.getSubject();
